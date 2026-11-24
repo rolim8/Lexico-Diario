@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palavra do Dia — Léxico da Língua Portuguesa</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Playfair Display (Editorial Serif) & Inter (Clean Sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind Configuration for Custom Fonts & Colors -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'Georgia', 'serif'],
+                        sans: ['"Inter"', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        paper: {
+                            light: '#FAF8F5',
+                            cardLight: '#FFFFFF',
+                            borderLight: '#E8E2D9',
+                            inkLight: '#1C1917',
+                            mutedLight: '#57534E',
+                            accentLight: '#8C3B2B', // Terracotta editorial ink
+                            
+                            dark: '#141312',
+                            cardDark: '#1C1A18',
+                            borderDark: '#2E2A27',
+                            inkDark: '#F5F2EB',
+                            mutedDark: '#A8A29E',
+                            accentDark: '#D97757',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-paper-light text-paper-inkLight dark:bg-paper-dark dark:text-paper-inkDark font-sans antialiased transition-colors duration-300 min-h-screen flex flex-col selection:bg-paper-accentLight/20 dark:selection:bg-paper-accentDark/30">
+
+    <!-- Toast Notification Container (Replaces alert) -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Top Navigation / Editorial Masthead -->
+    <header class="w-full border-b border-paper-borderLight dark:border-paper-borderDark bg-paper-light/80 dark:bg-paper-dark/80 backdrop-blur-md sticky top-0 z-30">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <!-- Brand / Title -->
+            <button onclick="resetToToday()" class="flex items-center gap-2.5 text-left group focus:outline-none">
+                <span class="w-8 h-8 rounded-lg bg-paper-inkLight dark:bg-paper-inkDark text-paper-light dark:text-paper-dark flex items-center justify-center font-serif font-bold text-lg shadow-sm group-hover:scale-105 transition-transform">
+                    P
+                </span>
+                <div>
+                    <span class="font-serif font-semibold text-base sm:text-lg tracking-tight block leading-none">Léxico Diário</span>
+                    <span class="text-[11px] uppercase tracking-widest text-paper-mutedLight dark:text-paper-mutedDark">Português do Brasil</span>
+                </div>
+            </button>
+
+            <!-- Action Controls -->
+            <div class="flex items-center gap-1.5 sm:gap-2">
+                <button onclick="openModal('history')" class="p-2.5 rounded-xl text-paper-mutedLight dark:text-paper-mutedDark hover:text-paper-inkLight dark:hover:text-paper-inkDark hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center gap-1.5 text-sm font-medium" title="Arquivo de Dias Anteriores">
+                    <i data-lucide="calendar-days" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Arquivo</span>
+                </button>
+
+                <button onclick="openModal('favorites')" class="p-2.5 rounded-xl text-paper-mutedLight dark:text-paper-mutedDark hover:text-paper-inkLight dark:hover:text-paper-inkDark hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center gap-1.5 text-sm font-medium relative" title="Palavras Salvas">
+                    <i data-lucide="bookmark" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Salvas</span>
+                    <span id="fav-badge" class="hidden w-4 h-4 text-[10px] font-semibold rounded-full bg-paper-accentLight dark:bg-paper-accentDark text-white flex items-center justify-center">0</span>
+                </button>
+
+                <div class="h-4 w-[1px] bg-paper-borderLight dark:bg-paper-borderDark mx-1"></div>
+
+                <button onclick="toggleTheme()" id="theme-toggle" class="p-2.5 rounded-xl text-paper-mutedLight dark:text-paper-mutedDark hover:text-paper-inkLight dark:hover:text-paper-inkDark hover:bg-black/5 dark:hover:bg-white/5 transition-colors" title="Alternar tema claro/escuro">
+                    <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
+                    <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-3xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-12 flex flex-col justify-center">
+        
+        <!-- Date & Countdown Metadata Bar -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-paper-borderLight dark:border-paper-borderDark text-xs sm:text-sm text-paper-mutedLight dark:text-paper-mutedDark">
+            <div class="flex items-center gap-2">
+                <span id="edition-badge" class="px-2.5 py-0.5 rounded-full bg-paper-accentLight/10 dark:bg-paper-accentDark/15 text-paper-accentLight dark:text-paper-accentDark font-medium text-xs">
+                    Edição de Hoje
+                </span>
+                <span id="formatted-date" class="capitalize font-medium text-paper-inkLight dark:text-paper-inkDark">
+                    Carregando data...
+                </span>
+            </div>
+
+            <div class="flex items-center gap-2 font-mono text-xs bg-black/[0.03] dark:bg-white/[0.03] px-3 py-1.5 rounded-lg border border-paper-borderLight/60 dark:border-paper-borderDark/60 self-start sm:self-auto">
+                <i data-lucide="clock" class="w-3.5 h-3.5 text-paper-accentLight dark:text-paper-accentDark"></i>
+                <span>Próxima palavra em:</span>
+                <span id="countdown-timer" class="font-semibold text-paper-inkLight dark:text-paper-inkDark">00:00:00</span>
+            </div>
+        </div>
+
+        <!-- Banner when viewing a past date -->
+        <div id="past-date-banner" class="hidden mb-6 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between gap-4 text-sm">
+            <div class="flex items-center gap-2.5 text-amber-800 dark:text-amber-200">
+                <i data-lucide="history" class="w-4 h-4 shrink-0"></i>
+                <span>Você está visualizando uma palavra de uma edição anterior.</span>
+            </div>
+            <button onclick="resetToToday()" class="px-3 py-1.5 rounded-lg bg-amber-600 text-white text-xs font-medium hover:bg-amber-700 transition-colors shrink-0">
+                Voltar para hoje
+            </button>
+        </div>
+
+        <!-- Dictionary Entry Card -->
+        <article class="bg-paper-cardLight dark:bg-paper-cardDark border border-paper-borderLight dark:border-paper-borderDark rounded-2xl p-6 sm:p-10 md:p-12 shadow-sm transition-all">
+            
+            <!-- Word Header & Primary Actions -->
+            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6">
+                <div>
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <h1 id="word-title" class="font-serif text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-paper-inkLight dark:text-paper-inkDark">
+                            —
+                        </h1>
+                        <button onclick="speakWord()" id="speak-btn" class="p-3 rounded-full bg-paper-light dark:bg-paper-dark border border-paper-borderLight dark:border-paper-borderDark text-paper-inkLight dark:text-paper-inkDark hover:border-paper-accentLight dark:hover:border-paper-accentDark hover:text-paper-accentLight dark:hover:text-paper-accentDark transition-all active:scale-95" title="Ouvir pronúncia (Português do Brasil)" aria-label="Ouvir pronúncia">
+                            <i data-lucide="volume-2" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm sm:text-base text-paper-mutedLight dark:text-paper-mutedDark">
+                        <span id="word-syllables" class="font-mono tracking-wide text-paper-inkLight/80 dark:text-paper-inkDark/80">
+                            —
+                        </span>
+                        <span class="text-paper-borderLight dark:text-paper-borderDark">•</span>
+                        <span id="word-class" class="italic font-serif text-paper-accentLight dark:text-paper-accentDark font-medium">
+                            —
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Bookmark & Share Buttons -->
+                <div class="flex items-center gap-2 self-start">
+                    <button onclick="toggleFavorite()" id="favorite-btn" class="p-3 rounded-xl border border-paper-borderLight dark:border-paper-borderDark hover:bg-paper-light dark:hover:bg-paper-dark transition-all flex items-center gap-2 text-sm font-medium active:scale-95" title="Salvar palavra nos favoritos">
+                        <i data-lucide="bookmark" id="favorite-icon" class="w-4 h-4"></i>
+                        <span id="favorite-text" class="hidden sm:inline">Salvar</span>
+                    </button>
+
+                    <button onclick="openShareModal()" class="p-3 rounded-xl bg-paper-inkLight dark:bg-paper-inkDark text-paper-light dark:text-paper-dark hover:opacity-90 transition-all flex items-center gap-2 text-sm font-medium shadow-sm active:scale-95" title="Compartilhar palavra">
+                        <i data-lucide="share-2" class="w-4 h-4"></i>
+                        <span>Compartilhar</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Editorial Divider -->
+            <div class="w-12 h-0.5 bg-paper-accentLight dark:bg-paper-accentDark my-6 rounded-full"></div>
+
+            <!-- Definition -->
+            <section class="mb-8">
+                <h2 class="text-xs font-semibold uppercase tracking-widest text-paper-mutedLight dark:text-paper-mutedDark mb-2.5">
+                    Significado
+                </h2>
+                <p id="word-definition" class="text-lg sm:text-xl leading-relaxed text-paper-inkLight dark:text-paper-inkDark font-normal">
+                    Carregando definição...
+                </p>
+            </section>
+
+            <!-- Contextual Example Quote -->
+            <section class="mb-8 p-5 rounded-xl bg-paper-light dark:bg-paper-dark/60 border-l-4 border-paper-accentLight dark:border-paper-accentDark">
+                <h2 class="text-xs font-semibold uppercase tracking-widest text-paper-mutedLight dark:text-paper-mutedDark mb-2">
+                    Exemplo de Uso
+                </h2>
+                <blockquote id="word-example" class="font-serif italic text-base sm:text-lg text-paper-inkLight/90 dark:text-paper-inkDark/90 leading-relaxed">
+                    "—"
+                </blockquote>
+            </section>
+
+            <!-- Synonyms & Antonyms Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8 pt-6 border-t border-paper-borderLight dark:border-paper-borderDark">
+                <div>
+                    <h3 class="text-xs font-semibold uppercase tracking-widest text-paper-mutedLight dark:text-paper-mutedDark mb-2.5">
+                        Sinônimos
+                    </h3>
+                    <div id="word-synonyms" class="flex flex-wrap gap-1.5">
+                        <!-- Badges injected by JS -->
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xs font-semibold uppercase tracking-widest text-paper-mutedLight dark:text-paper-mutedDark mb-2.5">
+                        Antônimos
+                    </h3>
+                    <div id="word-antonyms" class="flex flex-wrap gap-1.5">
+                        <!-- Badges injected by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Etymology & Curiosity -->
+            <section class="pt-6 border-t border-paper-borderLight dark:border-paper-borderDark">
+                <div class="flex items-start gap-3">
+                    <div class="p-2 rounded-lg bg-paper-light dark:bg-paper-dark text-paper-accentLight dark:text-paper-accentDark mt-0.5 shrink-0">
+                        <i data-lucide="feather" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xs font-semibold uppercase tracking-widest text-paper-mutedLight dark:text-paper-mutedDark mb-1">
+                            Etimologia & Curiosidade
+                        </h3>
+                        <p id="word-etymology" class="text-sm sm:text-base text-paper-mutedLight dark:text-paper-mutedDark leading-relaxed">
+                            —
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-3xl w-full mx-auto px-4 sm:px-6 py-6 text-center text-xs text-paper-mutedLight dark:text-paper-mutedDark border-t border-paper-borderLight/60 dark:border-paper-borderDark/60">
+        <p>Uma nova palavra todos os dias à meia-noite • Acervo curado da Língua Portuguesa.</p>
+    </footer>
+
+    <!-- MODAL: History & Favorites Drawer/Dialog -->
+    <div id="list-modal" class="fixed inset-0 z-40 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-paper-cardLight dark:bg-paper-cardDark border border-paper-borderLight dark:border-paper-borderDark rounded-2xl w-full max-w-lg max-h-[85vh] flex flex-col shadow-xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-paper-borderLight dark:border-paper-borderDark flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i id="modal-icon" data-lucide="bookmark" class="w-5 h-5 text-paper-accentLight dark:text-paper-accentDark"></i>
+                    <h3 id="modal-title" class="font-serif font-bold text-xl">Palavras Salvas</h3>
+                </div>
+                <button onclick="closeModal('list-modal')" class="p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-paper-mutedLight dark:text-paper-mutedDark">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <div id="modal-content" class="p-4 sm:p-6 overflow-y-auto space-y-3 flex-grow">
+                <!-- List items injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Share Card & Text -->
+    <div id="share-modal" class="fixed inset-0 z-40 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-paper-cardLight dark:bg-paper-cardDark border border-paper-borderLight dark:border-paper-borderDark rounded-2xl w-full max-w-md flex flex-col shadow-xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-paper-borderLight dark:border-paper-borderDark flex items-center justify-between">
+                <h3 class="font-serif font-bold text-xl">Compartilhar Palavra</h3>
+                <button onclick="closeModal('share-modal')" class="p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-paper-mutedLight dark:text-paper-mutedDark">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 flex flex-col items-center">
+                <!-- Visual Preview of the Generated Card -->
+                <div class="w-full rounded-xl overflow-hidden border border-paper-borderLight dark:border-paper-borderDark shadow-md mb-5 bg-paper-light">
+                    <canvas id="share-canvas" class="w-full h-auto block"></canvas>
+                </div>
+
+                <div class="w-full grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button onclick="copyShareText()" class="w-full py-3 px-4 rounded-xl border border-paper-borderLight dark:border-paper-borderDark hover:bg-paper-light dark:hover:bg-paper-dark font-medium text-sm flex items-center justify-center gap-2 transition-colors">
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                        <span>Copiar Texto</span>
+                    </button>
+
+                    <button onclick="downloadShareImage()" class="w-full py-3 px-4 rounded-xl bg-paper-accentLight dark:bg-paper-accentDark text-white hover:opacity-90 font-medium text-sm flex items-center justify-center gap-2 transition-opacity shadow-sm">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                        <span>Baixar Cartão</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * BANCO DE DADOS LEXICAL (Português do Brasil)
+         * Palavras ricas, expressivas e cuidadosamente selecionadas com metadados completos.
+         */
+        const DICTIONARY = [
+            {
+                word: "Efêmero",
+                syllables: "e·fê·me·ro",
+                grammarClass: "adjetivo",
+                definition: "Que tem duração muito curta; passageiro, transitório, fugaz. Aquilo que dura apenas um dia ou um breve instante.",
+                synonyms: ["passageiro", "transitório", "fugaz", "breve", "momentâneo"],
+                antonyms: ["eterno", "perene", "duradouro", "perpétuo"],
+                etymology: "Do grego 'ephémeros', formado por 'epí' (sobre) e 'hēméra' (dia), significando literalmente 'o que dura apenas um dia'. Na biologia, dá nome às efeméridas, insetos cuja fase adulta dura poucas horas.",
+                example: "O brilho dourado do crepúsculo sobre o mar é um espetáculo tão efêmero quanto inesquecível."
+            },
+            {
+                word: "Saudade",
+                syllables: "sau·da·de",
+                grammarClass: "substantivo feminino",
+                definition: "Sentimento melancólico e afetuoso causado pela distância ou ausência de alguém, de um lugar, de uma época ou de algo querido.",
+                synonyms: ["nostalgia", "melancolia", "lembrança", "ausência", "anseio"],
+                antonyms: ["indiferença", "desapego", "esquecimento"],
+                etymology: "Origina-se do latim 'solitate' (solidão), que evoluiu no galego-português para 'soidade' e posteriormente 'saudade', influenciado por 'saudar'. É frequentemente citada como uma das palavras mais emblemáticas da lusofonia.",
+                example: "Ao abrir o velho álbum de fotografias, uma saudade serena preencheu o silêncio da sala."
+            },
+            {
+                word: "Cafuné",
+                syllables: "ca·fu·né",
+                grammarClass: "substantivo masculino",
+                definition: "Ato de acariciar delicadamente a cabeça ou os cabelos de alguém com as pontas dos dedos, geralmente provocando sono ou relaxamento.",
+                synonyms: ["carinho", "afago", "carícia", "mimo", "meiguice"],
+                antonyms: ["aspereza", "brutalidade", "desafeto"],
+                etymology: "Termo genuinamente brasileiro vindo do quimbundo 'kifunate', que significa estalar ou torcer levemente os dedos na cabeça para produzir relaxamento. Incorporado ao português do Brasil durante o período colonial.",
+                example: "Depois de um dia exaustivo, tudo o que ela precisava era de um cafuné tranquilo no sofá."
+            },
+            {
+                word: "Serendipidade",
+                syllables: "se·ren·di·pi·da·de",
+                grammarClass: "substantivo feminino",
+                definition: "A capacidade ou o acaso feliz de fazer descobertas valiosas e agradáveis de forma inesperada, enquanto se procurava outra coisa.",
+                synonyms: ["acaso feliz", "fortuna", "achado", "providência", "sorte"],
+                antonyms: ["infortúnio", "azar", "planejamento"],
+                etymology: "Cunhada em 1754 pelo escritor inglês Horace Walpole a partir do conto persa 'Os Três Príncipes de Serendip' (antigo nome do Sri Lanka), cujos protagonistas faziam descobertas por sagacidade e acidente.",
+                example: "Encontrar aquela livraria escondida numa viela desconhecida foi pura serendipidade."
+            },
+            {
+                word: "Alvíssaras",
+                syllables: "al·vís·sa·ras",
+                grammarClass: "substantivo feminino plural",
+                definition: "Expressão de alegria por uma boa notícia; recompensa ou gratificação dada a quem traz uma novidade muito esperada e feliz.",
+                synonyms: ["boas-novas", "júbilo", "recompensa", "felicitação", "alegria"],
+                antonyms: ["pesar", "luto", "desgraça", "má notícia"],
+                etymology: "Do árabe 'al-bixâra', que significa 'a boa notícia'. Na tradição ibérica medieval, mensageiros que anunciavam vitórias ou nascimentos reais recebiam alvíssaras em moedas ou presentes.",
+                example: "Alvíssaras! O projeto foi finalmente aprovado após meses de espera."
+            },
+            {
+                word: "Inexorável",
+                syllables: "i·ne·xo·rá·vel",
+                grammarClass: "adjetivo de dois gêneros",
+                definition: "Que não se deixa comover por súplicas ou rogos; implacável, rigoroso, inevitável e impossível de deter.",
+                synonyms: ["implacável", "inevitável", "inflexível", "irrevogável", "rigoroso"],
+                antonyms: ["flexível", "complacente", "clemência", "evitável"],
+                etymology: "Do latim 'inexorabilis', composto pelo prefixo de negação 'in-' e 'exorabilis' (que pode ser convencido por preces). Originalmente aplicava-se aos deuses ou juízes irredutíveis.",
+                example: "A passagem inexorável do tempo transforma todas as paisagens e memórias."
+            },
+            {
+                word: "Plenitude",
+                syllables: "ple·ni·tu·de",
+                grammarClass: "substantivo feminino",
+                definition: "Estado do que é inteiro, completo ou absoluto; sensação profunda de realização, abundância e harmonia interior.",
+                synonyms: ["totalidade", "inteireza", "completude", "abundância", "apogeu"],
+                antonyms: ["vazio", "escassez", "incompletude", "carência"],
+                etymology: "Do latim 'plenitudo', derivado de 'plenus' (cheio). Na filosofia clássica, designa a perfeição de um ser que atingiu todo o seu potencial.",
+                example: "Sentia uma rara plenitude ao contemplar a obra concluída após anos de dedicação."
+            },
+            {
+                word: "Idílico",
+                syllables: "i·dí·li·co",
+                grammarClass: "adjetivo",
+                definition: "Que possui encanto poético, campestre e harmonioso; idealizado, sereno e paradisíaco.",
+                synonyms: ["bucólico", "pastoril", "paradisiaco", "poético", "sereno"],
+                antonyms: ["caótico", "inhóspito", "sombrio", "urbano"],
+                etymology: "Do grego 'eidýllion' (pequeno quadro ou poema curto), popularizado pelo poeta Teócrito no século III a.C. para descrever cenas tranquilas da vida no campo.",
+                example: "Passaram as férias em um vilarejo idílico cercado por montanhas e pomares."
+            },
+            {
+                word: "Resiliência",
+                syllables: "re·si·li·ên·ci·a",
+                grammarClass: "substantivo feminino",
+                definition: "Capacidade de se recuperar rapidamente de adversidades, traumas ou mudanças bruscas; propriedade física de um material voltar ao estado original após deformação.",
+                synonyms: ["superação", "elasticidade", "adaptabilidade", "fortaleza", "resistência"],
+                antonyms: ["fragilidade", "rigidez", "vulnerabilidade"],
+                etymology: "Do latim 'resilire' (saltar para trás, recuar). Começou como termo da física e engenharia no século XIX antes de ser adotado pela psicologia moderna.",
+                example: "A resiliência daquela comunidade permitiu reconstruir toda a vila após a tempestade."
+            },
+            {
+                word: "Inefável",
+                syllables: "i·ne·fá·vel",
+                grammarClass: "adjetivo de dois gêneros",
+                definition: "Que não se pode exprimir ou descrever por meio de palavras devido à sua beleza, intensidade ou sublimidade.",
+                synonyms: ["indizível", "inexprimível", "sublime", "indescritível", "transcendente"],
+                antonyms: ["exprimível", "descritível", "comum", "trivial"],
+                etymology: "Do latim 'ineffabilis', formado por 'in-' (não) e 'effabilis' (que pode ser dito, de 'effari', falar). Muito usado na poesia mística para descrever o sagrado.",
+                example: "Havia uma alegria inefável no olhar da pianista ao tocar os últimos acordes da sinfonia."
+            },
+            {
+                word: "Quintessência",
+                syllables: "quin·tes·sên·ci·a",
+                grammarClass: "substantivo feminino",
+                definition: "O que há de mais puro, essencial e refinado em algo; o extrato mais concentrado de uma ideia, qualidade ou substância.",
+                synonyms: ["essência", "apogeu", "suprassumo", "extrato", "perfeição"],
+                antonyms: ["superficialidade", "impureza", "trivialidade"],
+                etymology: "Do latim medieval 'quinta essentia' (quinta essência). Na filosofia aristotélica e na alquimia, era o quinto elemento celeste (o éter), superior à terra, água, fogo e ar.",
+                example: "Aquele pequeno conto representa a quintessência da literatura machadiana."
+            },
+            {
+                word: "Sempiterno",
+                syllables: "sem·pi·ter·no",
+                grammarClass: "adjetivo",
+                definition: "Que dura para sempre; que não tem fim, eterno, perpétuo e contínuo.",
+                synonyms: ["eterno", "perpétuo", "perene", "imortal", "infinito"],
+                antonyms: ["efêmero", "finito", "passageiro", "mortal"],
+                etymology: "Do latim 'sempiternus', junção de 'semper' (sempre) e 'aeternus' (eterno), reforçando a ideia de continuidade infinita.",
+                example: "As estrelas parecem testemunhas sempiternas da história da humanidade."
+            },
+            {
+                word: "Zéfiro",
+                syllables: "zé·fi·ro",
+                grammarClass: "substantivo masculino",
+                definition: "Vento suave, fresco e agradável; brisa ligeira e amena que sopra do ocidente.",
+                synonyms: ["brisa", "aragem", "viração", "sopro", "aura"],
+                antonyms: ["vendaval", "furacão", "tempestade", "tormenta"],
+                etymology: "Na mitologia grega, Zéfiro ('Zéphyros') era a personificação do vento oeste, mensageiro da primavera e o mais gentil dos ventos.",
+                example: "Um zéfiro perfumado pelas flores do jardim entrou pela janela aberta da biblioteca."
+            },
+            {
+                word: "Bálsamo",
+                syllables: "bál·sa·mo",
+                grammarClass: "substantivo masculino",
+                definition: "Substância aromática usada para aliviar dores; figurativamente, tudo aquilo que traz conforto, consolo e alívio moral.",
+                synonyms: ["consolo", "alívio", "lenitivo", "conforto", "unguento"],
+                antonyms: ["tormento", "aflição", "martírio", "veneno"],
+                etymology: "Do grego 'bálsamon', designando a resina perfumada extraída de árvores do Oriente Médio, historicamente valorizada por suas propriedades curativas.",
+                example: "Suas palavras sábias e acolhedoras funcionaram como um bálsamo para o coração aflito."
+            },
+            {
+                word: "Nefelibata",
+                syllables: "ne·fe·li·ba·ta",
+                grammarClass: "substantivo e adjetivo de dois gêneros",
+                definition: "Pessoa que vive nas nuvens, alheia à realidade prática, entregue a devaneios, fantasias e idealismos.",
+                synonyms: ["sonhador", "devaneador", "utópico", "distraído", "idealista"],
+                antonyms: ["pragmático", "realista", "pé no chão", "objetivo"],
+                etymology: "Do grego 'nephéle' (nuvem) e 'bátes' (aquele que anda), significando literalmente 'aquele que caminha sobre as nuvens'.",
+                example: "Como um verdadeiro nefelibata, passava as tardes escrevendo versos enquanto observava as nuvens."
+            },
+            {
+                word: "Onírico",
+                syllables: "o·ní·ri·co",
+                grammarClass: "adjetivo",
+                definition: "Relativo aos sonhos ou que possui a atmosfera fantástica, surreal e fluida própria de um sonho.",
+                synonyms: ["fantástico", "surreal", "imaginário", "ilusório", "mágico"],
+                antonyms: ["real", "concreto", "palpável", "material"],
+                etymology: "Do grego 'óneiros' (sonho). Na mitologia grega, os Oniros eram as divindades responsáveis por enviar sonhos aos mortais.",
+                example: "As pinturas surrealistas criam paisagens oníricas onde o tempo parece derreter."
+            },
+            {
+                word: "Magnânimo",
+                syllables: "mag·nâ·ni·mo",
+                grammarClass: "adjetivo",
+                definition: "Que possui grandeza de alma; generoso, nobre, clemente e disposto a perdoar ofensas com elevação moral.",
+                synonyms: ["generoso", "nobre", "altruísta", "clemente", "benevolente"],
+                antonyms: ["mesquinho", "vingativo", "egoísta", "pequeno"],
+                etymology: "Do latim 'magnanimus', composto por 'magnus' (grande) e 'animus' (alma, espírito). Para Aristóteles, a magnanimidade era a coroa das virtudes.",
+                example: "Mesmo diante das críticas injustas, o mestre mostrou-se magnânimo e acolheu os aprendizes."
+            },
+            {
+                word: "Taciturno",
+                syllables: "ta·ci·tur·no",
+                grammarClass: "adjetivo",
+                definition: "Que fala pouco; silencioso, reservado, introspectivo e com tendência à melancolia ou seriedade.",
+                synonyms: ["silencioso", "calado", "introspectivo", "reservado", "sombrio"],
+                antonyms: ["loquaz", "falante", "expansivo", "comunicativo"],
+                etymology: "Do latim 'taciturnus', derivado de 'tacitus' (silencioso, calado), de onde também vem a palavra 'tácito'.",
+                example: "O velho faroleiro era um homem taciturno, mas de olhar profundamente atento."
+            },
+            {
+                word: "Ubíquo",
+                syllables: "u·bí·quo",
+                grammarClass: "adjetivo",
+                definition: "Que está ou parece estar presente em todos os lugares ao mesmo tempo; onipresente.",
+                synonyms: ["onipresente", "omnipresente", "universal", "difundido"],
+                antonyms: ["ausente", "restrito", "localizado", "raro"],
+                etymology: "Do latim 'ubique' (em toda parte). Deu origem também ao termo 'computação ubíqua', usado na tecnologia moderna.",
+                example: "Na era digital, o acesso à informação tornou-se praticamente ubíquo."
+            },
+            {
+                word: "Verossímil",
+                syllables: "ve·ros·sí·mil",
+                grammarClass: "adjetivo de dois gêneros",
+                definition: "Que parece verdadeiro; plausível, provável e coerente com a realidade ou com a lógica interna de uma narrativa.",
+                synonyms: ["plausível", "provável", "crível", "coerente", "aceitável"],
+                antonyms: ["inverossímil", "absurdo", "improvável", "fantasioso"],
+                etymology: "Do latim 'verisimilis', junção de 'verus' (verdadeiro) e 'similis' (semelhante). Conceito central na Poética de Aristóteles.",
+                example: "Embora fosse uma obra de ficção, a trama era tão bem construída que parecia inteiramente verossímil."
+            },
+            {
+                word: "Zênite",
+                syllables: "zê·ni·te",
+                grammarClass: "substantivo masculino",
+                definition: "Ponto mais alto da esfera celeste situado exatamente acima da cabeça do observador; figurativamente, o ponto culminante ou apogeu.",
+                synonyms: ["apogeu", "auge", "ápice", "cume", "pináculo"],
+                antonyms: ["nadir", "declínio", "base", "ocaso"],
+                etymology: "Do árabe 'samt ar-ra's' (direção da cabeça), que sofreu erro de transcrição pelos copistas latinos medievais de 'semt' para 'zenit'.",
+                example: "Ao meio-dia, o sol atingiu o zênite, eliminando quase todas as sombras da praça."
+            },
+            {
+                word: "Alvorada",
+                syllables: "al·vo·ra·da",
+                grammarClass: "substantivo feminino",
+                definition: "O primeiro clarão da manhã antes do nascer do sol; início de um novo dia ou de uma nova era.",
+                synonyms: ["amanhecer", "aurora", "madrugada", "alba", "despontar"],
+                antonyms: ["crepúsculo", "anoitecer", "ocaso", "poente"],
+                etymology: "Derivado de 'alvor' (brancura, claridade), do latim 'albor' (branco). Na cultura brasileira, batiza também o palácio presidencial em Brasília.",
+                example: "Os pássaros começaram a cantar antes mesmo que os primeiros tons da alvorada pintassem o horizonte."
+            },
+            {
+                word: "Eloquente",
+                syllables: "e·lo·quen·te",
+                grammarClass: "adjetivo de dois gêneros",
+                definition: "Que fala ou escreve com fluência, persuasão e elegância; que expressa algo de forma muito clara e comovente.",
+                synonyms: ["persuasivo", "expressivo", "fluente", "convincente", "retórico"],
+                antonyms: ["inexpressivo", "hesitante", "lacônico", "apático"],
+                etymology: "Do latim 'eloquens', particípio de 'eloqui' (falar com clareza, exprimir-se plenamente).",
+                example: "O silêncio da plateia ao final do discurso foi a prova mais eloquente do impacto de suas palavras."
+            },
+            {
+                word: "Límpido",
+                syllables: "lím·pi·do",
+                grammarClass: "adjetivo",
+                definition: "Claro, transparente e sem impurezas; puro, sereno e de fácil compreensão.",
+                synonyms: ["cristalino", "transparente", "puro", "claro", "nítido"],
+                antonyms: ["turvo", "opaco", "obscuro", "sujo"],
+                etymology: "Do latim 'limpidus' (claro como a água). Na antiguidade romana, 'lymphae' eram as divindades das águas puras e cristalinas.",
+                example: "A água límpida do riacho permitia ver cada seixo colorido no fundo."
+            },
+            {
+                word: "Quimera",
+                syllables: "qui·me·ra",
+                grammarClass: "substantivo feminino",
+                definition: "Sonho irrealizável, fantasia ou criação da imaginação sem fundamento na realidade; na mitologia, criatura híbrida fabulosa.",
+                synonyms: ["utopia", "ilusão", "fantasia", "devaneio", "miragem"],
+                antonyms: ["realidade", "certeza", "fato", "concretude"],
+                etymology: "Do grego 'Chímaira', monstro mitológico com cabeça de leão, corpo de cabra e cauda de serpente, derrotado por Belerofonte.",
+                example: "Perseguir a perfeição absoluta muitas vezes significa correr atrás de uma quimera."
+            },
+            {
+                word: "Recôndito",
+                syllables: "re·côn·di·to",
+                grammarClass: "adjetivo e substantivo masculino",
+                definition: "Escondido, profundo, íntimo e de difícil acesso; o lugar mais secreto da mente ou da natureza.",
+                synonyms: ["oculto", "íntimo", "profundo", "secreto", "retirado"],
+                antonyms: ["expresso", "manifesto", "superficial", "visível"],
+                etymology: "Do latim 'reconditus' (escondido, guardado com cuidado), particípio de 'recondere'.",
+                example: "Aquela melodia despertou memórias guardadas no canto mais recôndito da infância."
+            },
+            {
+                word: "Cândido",
+                syllables: "cân·di·do",
+                grammarClass: "adjetivo",
+                definition: "Que possui pureza, inocência e ingenuidade; muito branco, puro e sincero.",
+                synonyms: ["puro", "ingênuo", "inocente", "sincero", "alvo"],
+                antonyms: ["malicioso", "astuto", "corrompido", "dissimulado"],
+                etymology: "Do latim 'candidus' (branco brilhante). Na Roma Antiga, os candidatos a cargos públicos vestiam togas brancas ('toga candida') para simbolizar pureza de intenções.",
+                example: "Respondeu à pergunta complexa com um sorriso cândido e desarmante."
+            },
+            {
+                word: "Fulgor",
+                syllables: "ful·gor",
+                grammarClass: "substantivo masculino",
+                definition: "Brilho intenso, clarão vivo e resplandecente; esplendor, glória ou vivacidade intelectual.",
+                synonyms: ["brilho", "esplendor", "resplendor", "luminosidade", "clarão"],
+                antonyms: ["opacidade", "escuridão", "penumbra", "apagamento"],
+                etymology: "Do latim 'fulgor' (relâmpago, clarão), derivado do verbo 'fulgere' (brilhar intensamente).",
+                example: "O fulgor das ideias renascentistas iluminou séculos de arte e ciência na Europa."
+            },
+            {
+                word: "Gáudio",
+                syllables: "gáu·di·o",
+                grammarClass: "substantivo masculino",
+                definition: "Alegria intensa, júbilo, contentamento profundo e satisfação íntima.",
+                synonyms: ["júbilo", "alegria", "contentamento", "regozijo", "deleite"],
+                antonyms: ["tristeza", "pesar", "desgosto", "melancolia"],
+                etymology: "Do latim 'gaudium' (alegria íntima e serena), termo usado no hino universitário tradicional 'Gaudeamus igitur' ('Alegremo-nos, pois').",
+                example: "Para gáudio de todos os leitores, a biblioteca histórica reabriu suas portas restauradas."
+            },
+            {
+                word: "Haurir",
+                syllables: "hau·rir",
+                grammarClass: "verbo transitivo",
+                definition: "Absorver, aspirar ou beber profundamente; extrair conhecimento, inspiração ou energia de uma fonte.",
+                synonyms: ["absorver", "sorver", "extrair", "assimilar", "aspirar"],
+                antonyms: ["expelir", "desperdiçar", "verter", "esgotar"],
+                etymology: "Do latim 'haurire' (tirar água de um poço, sorver). É um verbo defectivo na língua portuguesa, utilizado apenas nas formas em que a raiz é seguida de 'i' ou 'e'.",
+                example: "Durante sua viagem pelo interior, procurou haurir toda a sabedoria dos artesãos locais."
+            },
+            {
+                word: "Lânguido",
+                syllables: "lân·gui·do",
+                grammarClass: "adjetivo",
+                definition: "Que revela moleza suave, cansaço agradável, doçura melancólica ou falta de vigor físico.",
+                synonyms: ["abatido", "suave", "indolente", "brando", "melancólico"],
+                antonyms: ["enérgico", "vigoroso", "vivaz", "intenso"],
+                etymology: "Do latim 'languidus' (fraco, sem vigor, suave), ligado ao verbo 'languere' (estar frouxo ou cansado).",
+                example: "A tarde quente de domingo convidava a um descanso lânguido na rede da varanda."
+            },
+            {
+                word: "Pletora",
+                syllables: "ple·to·ra",
+                grammarClass: "substantivo feminino",
+                definition: "Superabundância, excesso ou grande quantidade de algo; originalmente, excesso de sangue ou humores no organismo.",
+                synonyms: ["superabundância", "excesso", "profusão", "fartura", "exuberância"],
+                antonyms: ["escassez", "penúria", "falta", "carência"],
+                etymology: "Do grego 'plethóre' (plenitude, saciedade), derivado de 'pléthein' (estar cheio).",
+                example: "Vivemos em uma época marcada por uma pletora de informações disponíveis a cada segundo."
+            },
+            {
+                word: "Benevolência",
+                syllables: "be·ne·vo·lên·ci·a",
+                grammarClass: "substantivo feminino",
+                definition: "Disposição favorável e bondosa para com os outros; boa vontade, indulgência e gentileza.",
+                synonyms: ["bondade", "gentileza", "beneplácito", "altruísmo", "cordialidade"],
+                antonyms: ["malevolência", "hostilidade", "rancor", "crueldade"],
+                etymology: "Do latim 'benevolentia', formado por 'bene' (bem) e 'volens' (que quer), significando literalmente 'querer o bem'.",
+                example: "A professora corrigia os erros dos alunos sempre com paciência e benevolência."
+            },
+            {
+                word: "Desiderato",
+                syllables: "de·si·de·ra·to",
+                grammarClass: "substantivo masculino",
+                definition: "Aquilo que se deseja ardentemente alcançar; aspiração legítima, objetivo ou ideal almejado.",
+                synonyms: ["aspiração", "objetivo", "anseio", "meta", "desejo"],
+                antonyms: ["rejeição", "aversão", "desinteresse"],
+                etymology: "Do latim 'desideratum' (coisa desejada), particípio passado neutro de 'desiderare' (sentir falta de, desejar).",
+                example: "A democratização da leitura sempre foi o principal desiderato de sua carreira."
+            },
+            {
+                word: "Sutileza",
+                syllables: "su·ti·le·za",
+                grammarClass: "substantivo feminino",
+                definition: "Qualidade do que é delicado, fino, perspicaz ou quase imperceptível; argúcia de espírito.",
+                synonyms: ["delicadeza", "perspicácia", "finura", "argúcia", "nuance"],
+                antonyms: ["grosseria", "brutalidade", "obviedade", "rudeza"],
+                etymology: "Do latim 'subtilitas', derivado de 'subtilis' (tecido finamente, delicado; originalmente o fio que passa por baixo da teia).",
+                example: "A beleza daquela conversa residia na sutileza dos gestos não ditos."
+            },
+            {
+                word: "Xodó",
+                syllables: "xo·dó",
+                grammarClass: "substantivo masculino",
+                definition: "Pessoa ou coisa pela qual se tem grande afeição, carinho especial ou predileção; namorado ou bem-querer.",
+                synonyms: ["predileto", "querido", "afeto", "chamego", "paixão"],
+                antonyms: ["antipatia", "desafeto", "aversão"],
+                etymology: "Palavra tipicamente brasileira, provavelmente originada de línguas africanas (como o iorubá ou quimbundo) trazidas ao Brasil, incorporada ao vocabulário afetivo nacional.",
+                example: "O pequeno jardim de ervas aromáticas na sacada tornou-se o xodó da casa."
+            }
+        ];
+
+        // State Variables
+        let currentViewingDate = new Date(); // Defaults to today
+        let currentWordObj = null;
+        let favorites = JSON.parse(localStorage.getItem('lexico_favorites') || '[]');
+
+        /**
+         * DETERMINISTIC SEED GENERATOR BASED ON DATE
+         * Garante que qualquer pessoa no mundo na mesma data (YYYY-MM-DD)
+         * receba exatamente o mesmo índice do dicionário.
+         */
+        function getDateKey(dateObj) {
+            const year = dateObj.getFullYear();
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function getWordForDate(dateObj) {
+            // Calcula o número de dias inteiros desde uma data de época fixa (1 Jan 2024)
+            // Isso evita repetições seguidas e garante distribuição uniforme dia após dia
+            const epoch = new Date(2024, 0, 1);
+            const target = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
+            const diffTime = target.getTime() - epoch.getTime();
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            
+            // Aplica um passo primo coprimo ou módulo direto para embaralhar de forma determinística
+            const total = DICTIONARY.length;
+            // Usamos uma função hash determinística simples baseada no dia absoluto
+            const index = Math.abs((diffDays * 17 + 7) % total);
+            return DICTIONARY[index];
+        }
+
+        /**
+         * RENDERIZAÇÃO DA PALAVRA NA INTERFACE
+         */
+        function renderWord(dateObj) {
+            currentViewingDate = dateObj;
+            currentWordObj = getWordForDate(dateObj);
+            
+            const todayKey = getDateKey(new Date());
+            const viewingKey = getDateKey(dateObj);
+            const isToday = todayKey === viewingKey;
+
+            // Atualiza cabeçalho de data e badges
+            const dateFormatter = new Intl.DateTimeFormat('pt-BR', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+            document.getElementById('formatted-date').textContent = dateFormatter.format(dateObj);
+            
+            const editionBadge = document.getElementById('edition-badge');
+            const pastBanner = document.getElementById('past-date-banner');
+            
+            if (isToday) {
+                editionBadge.textContent = "Edição de Hoje";
+                pastBanner.classList.add('hidden');
+            } else {
+                editionBadge.textContent = "Arquivo Histórico";
+                pastBanner.classList.remove('hidden');
+            }
+
+            // Preenche dados lexicais
+            document.getElementById('word-title').textContent = currentWordObj.word;
+            document.getElementById('word-syllables').textContent = currentWordObj.syllables;
+            document.getElementById('word-class').textContent = currentWordObj.grammarClass;
+            document.getElementById('word-definition').textContent = currentWordObj.definition;
+            document.getElementById('word-example').textContent = `“${currentWordObj.example}”`;
+            document.getElementById('word-etymology').textContent = currentWordObj.etymology;
+
+            // Sinônimos
+            const synContainer = document.getElementById('word-synonyms');
+            synContainer.innerHTML = currentWordObj.synonyms.map(syn => 
+                `<span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-paper-light dark:bg-paper-dark border border-paper-borderLight dark:border-paper-borderDark text-paper-inkLight dark:text-paper-inkDark">${syn}</span>`
+            ).join('');
+
+            // Antônimos
+            const antContainer = document.getElementById('word-antonyms');
+            antContainer.innerHTML = currentWordObj.antonyms.map(ant => 
+                `<span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-paper-light dark:bg-paper-dark border border-paper-borderLight dark:border-paper-borderDark text-paper-mutedLight dark:text-paper-mutedDark">${ant}</span>`
+            ).join('');
+
+            updateFavoriteButtonUI();
+            lucide.createIcons();
+        }
+
+        function resetToToday() {
+            renderWord(new Date());
+        }
+
+        /**
+         * CONTAGEM REGRESSIVA EM TEMPO REAL ATÉ A MEIA-NOITE
+         */
+        let lastKnownDateKey = getDateKey(new Date());
+
+        function updateCountdown() {
+            const now = new Date();
+            const currentKey = getDateKey(now);
+
+            // Se virou a meia-noite enquanto o usuário estava com a página aberta e vendo hoje
+            if (currentKey !== lastKnownDateKey) {
+                lastKnownDateKey = currentKey;
+                renderWord(now);
+                showToast("Meia-noite! Uma nova Palavra do Dia chegou.");
+            }
+
+            const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+            const diff = midnight - now;
+
+            const hours = String(Math.floor((diff / (1000 * 60 * 60)) % 24)).padStart(2, '0');
+            const minutes = String(Math.floor((diff / 1000 / 60) % 60)).padStart(2, '0');
+            const seconds = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
+
+            document.getElementById('countdown-timer').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        /**
+         * PRONÚNCIA EM ÁUDIO (Web Speech API - pt-BR)
+         */
+        function speakWord() {
+            if (!('speechSynthesis' in window)) {
+                showToast("Seu navegador não suporta síntese de voz.", "error");
+                return;
+            }
+
+            // Cancela qualquer fala em andamento
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(currentWordObj.word);
+            utterance.lang = 'pt-BR';
+            utterance.rate = 0.9; // Levemente pausado para clareza diccionária
+
+            // Tenta selecionar uma voz pt-BR nativa de alta qualidade
+            const voices = window.speechSynthesis.getVoices();
+            const ptVoice = voices.find(v => v.lang === 'pt-BR' || v.lang.startsWith('pt'));
+            if (ptVoice) {
+                utterance.voice = ptVoice;
+            }
+
+            const btn = document.getElementById('speak-btn');
+            btn.classList.add('ring-2', 'ring-paper-accentLight', 'dark:ring-paper-accentDark');
+
+            utterance.onend = () => {
+                btn.classList.remove('ring-2', 'ring-paper-accentLight', 'dark:ring-paper-accentDark');
+            };
+
+            utterance.onerror = () => {
+                btn.classList.remove('ring-2', 'ring-paper-accentLight', 'dark:ring-paper-accentDark');
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Pré-carrega vozes em navegadores baseados em Chromium
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+        }
+
+        /**
+         * SISTEMA DE FAVORITOS (localStorage)
+         */
+        function toggleFavorite() {
+            const wordName = currentWordObj.word;
+            const index = favorites.indexOf(wordName);
+
+            if (index === -1) {
+                favorites.unshift(wordName);
+                showToast(`“${wordName}” salva nos favoritos.`);
+            } else {
+                favorites.splice(index, 1);
+                showToast(`“${wordName}” removida dos favoritos.`);
+            }
+
+            localStorage.setItem('lexico_favorites', JSON.stringify(favorites));
+            updateFavoriteButtonUI();
+            updateFavoriteBadge();
+        }
+
+        function updateFavoriteButtonUI() {
+            const isFav = favorites.includes(currentWordObj.word);
+            const btn = document.getElementById('favorite-btn');
+            const text = document.getElementById('favorite-text');
+
+            if (isFav) {
+                btn.classList.add('border-paper-accentLight', 'dark:border-paper-accentDark', 'text-paper-accentLight', 'dark:text-paper-accentDark', 'bg-paper-accentLight/5', 'dark:bg-paper-accentDark/10');
+                text.textContent = "Salva";
+            } else {
+                btn.classList.remove('border-paper-accentLight', 'dark:border-paper-accentDark', 'text-paper-accentLight', 'dark:text-paper-accentDark', 'bg-paper-accentLight/5', 'dark:bg-paper-accentDark/10');
+                text.textContent = "Salvar";
+            }
+        }
+
+        function updateFavoriteBadge() {
+            const badge = document.getElementById('fav-badge');
+            if (favorites.length > 0) {
+                badge.textContent = favorites.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        /**
+         * MODAIS: ARQUIVO HISTÓRICO & FAVORITOS
+         */
+        function openModal(type) {
+            const modal = document.getElementById('list-modal');
+            const title = document.getElementById('modal-title');
+            const content = document.getElementById('modal-content');
+            const icon = document.getElementById('modal-icon');
+
+            content.innerHTML = '';
+
+            if (type === 'favorites') {
+                title.textContent = "Palavras Salvas";
+                icon.setAttribute('data-lucide', 'bookmark');
+
+                if (favorites.length === 0) {
+                    content.innerHTML = `
+                        <div class="text-center py-10 text-paper-mutedLight dark:text-paper-mutedDark">
+                            <p class="font-serif italic text-lg mb-1">Nenhuma palavra salva ainda.</p>
+                            <p class="text-xs">Clique em "Salvar" para colecionar suas palavras favoritas.</p>
+                        </div>
+                    `;
+                } else {
+                    favorites.forEach(wordStr => {
+                        const entry = DICTIONARY.find(w => w.word === wordStr);
+                        if (!entry) return;
+
+                        const item = document.createElement('div');
+                        item.className = "p-4 rounded-xl bg-paper-light dark:bg-paper-dark border border-paper-borderLight dark:border-paper-borderDark flex items-start justify-between gap-3 hover:border-paper-accentLight/50 transition-colors";
+                        item.innerHTML = `
+                            <div class="cursor-pointer flex-grow" onclick="loadWordDirectly('${entry.word}')">
+                                <div class="flex items-baseline gap-2">
+                                    <span class="font-serif font-bold text-lg">${entry.word}</span>
+                                    <span class="text-xs italic text-paper-accentLight dark:text-paper-accentDark">${entry.grammarClass}</span>
+                                </div>
+                                <p class="text-xs text-paper-mutedLight dark:text-paper-mutedDark line-clamp-2 mt-1">${entry.definition}</p>
+                            </div>
+                            <button onclick="removeFavoriteFromList('${entry.word}')" class="p-1.5 text-paper-mutedLight hover:text-red-500 transition-colors" title="Remover">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        `;
+                        content.appendChild(item);
+                    });
+                }
+            } else if (type === 'history') {
+                title.textContent = "Edições Recentes";
+                icon.setAttribute('data-lucide', 'calendar-days');
+
+                // Gera os últimos 14 dias (incluindo hoje)
+                const today = new Date();
+                const shortFormatter = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' });
+
+                for (let i = 0; i < 14; i++) {
+                    const pastDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - i);
+                    const wordEntry = getWordForDate(pastDate);
+                    const isToday = i === 0;
+
+                    const item = document.createElement('button');
+                    item.className = "w-full text-left p-4 rounded-xl bg-paper-light dark:bg-paper-dark border border-paper-borderLight dark:border-paper-borderDark hover:border-paper-accentLight dark:hover:border-paper-accentDark transition-all flex items-center justify-between gap-4";
+                    item.onclick = () => {
+                        renderWord(pastDate);
+                        closeModal('list-modal');
+                    };
+
+                    item.innerHTML = `
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-serif font-bold text-lg">${wordEntry.word}</span>
+                                ${isToday ? '<span class="px-2 py-0.5 text-[10px] font-semibold uppercase rounded-full bg-paper-accentLight/15 text-paper-accentLight dark:text-paper-accentDark">Hoje</span>' : ''}
+                            </div>
+                            <p class="text-xs text-paper-mutedLight dark:text-paper-mutedDark line-clamp-1 mt-0.5">${wordEntry.definition}</p>
+                        </div>
+                        <span class="text-xs font-mono text-paper-mutedLight dark:text-paper-mutedDark shrink-0 capitalize">
+                            ${shortFormatter.format(pastDate)}
+                        </span>
+                    `;
+                    content.appendChild(item);
+                }
+            }
+
+            modal.classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function loadWordDirectly(wordStr) {
+            // Procura nos últimos 60 dias a data em que esta palavra apareceu, ou exibe diretamente
+            const today = new Date();
+            for (let i = 0; i < 60; i++) {
+                const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() - i);
+                if (getWordForDate(d).word === wordStr) {
+                    renderWord(d);
+                    closeModal('list-modal');
+                    return;
+                }
+            }
+            // Fallback se estiver além de 60 dias
+            const entry = DICTIONARY.find(w => w.word === wordStr);
+            if (entry) {
+                currentWordObj = entry;
+                document.getElementById('word-title').textContent = entry.word;
+                document.getElementById('word-syllables').textContent = entry.syllables;
+                document.getElementById('word-class').textContent = entry.grammarClass;
+                document.getElementById('word-definition').textContent = entry.definition;
+                document.getElementById('word-example').textContent = `“${entry.example}”`;
+                document.getElementById('word-etymology').textContent = entry.etymology;
+                updateFavoriteButtonUI();
+                closeModal('list-modal');
+            }
+        }
+
+        function removeFavoriteFromList(wordStr) {
+            favorites = favorites.filter(w => w !== wordStr);
+            localStorage.setItem('lexico_favorites', JSON.stringify(favorites));
+            updateFavoriteButtonUI();
+            updateFavoriteBadge();
+            openModal('favorites'); // Re-render list
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        /**
+         * COMPARTILHAMENTO: TEXTO FORMATADO & CARTÃO VISUAL (CANVAS)
+         */
+        function openShareModal() {
+            const modal = document.getElementById('share-modal');
+            modal.classList.remove('hidden');
+            generateShareCard();
+        }
+
+        function generateShareCard() {
+            const canvas = document.getElementById('share-canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Alta resolução para cartão editorial (1080 x 1080)
+            const width = 1080;
+            const height = 1080;
+            canvas.width = width;
+            canvas.height = height;
+
+            // Fundo papel creme editorial
+            ctx.fillStyle = '#FAF8F5';
+            ctx.fillRect(0, 0, width, height);
+
+            // Moldura interna sutil
+            ctx.strokeStyle = '#E8E2D9';
+            ctx.lineWidth = 4;
+            ctx.strokeRect(48, 48, width - 96, height - 96);
+
+            // Cabeçalho: Léxico Diário & Data
+            ctx.fillStyle = '#8C3B2B';
+            ctx.font = '600 24px Inter, sans-serif';
+            ctx.fillText('PALAVRA DO DIA • LÉXICO DIÁRIO', 96, 130);
+
+            const dateStr = new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' }).format(currentViewingDate);
+            ctx.fillStyle = '#57534E';
+            ctx.font = '400 24px Inter, sans-serif';
+            ctx.fillText(dateStr.toUpperCase(), 96, 170);
+
+            // Linha divisória superior
+            ctx.fillStyle = '#E8E2D9';
+            ctx.fillRect(96, 205, width - 192, 2);
+
+            // Título da Palavra (Playfair Display)
+            ctx.fillStyle = '#1C1917';
+            ctx.font = 'bold 96px "Playfair Display", Georgia, serif';
+            ctx.fillText(currentWordObj.word, 96, 330);
+
+            // Separação silábica & Classe gramatical
+            ctx.fillStyle = '#57534E';
+            ctx.font = '400 32px monospace';
+            const sylWidth = ctx.measureText(currentWordObj.syllables).width;
+            ctx.fillText(currentWordObj.syllables, 96, 390);
+
+            ctx.fillStyle = '#8C3B2B';
+            ctx.font = 'italic 34px "Playfair Display", Georgia, serif';
+            ctx.fillText(`•  ${currentWordObj.grammarClass}`, 96 + sylWidth + 24, 390);
+
+            // Traço editorial terracota
+            ctx.fillStyle = '#8C3B2B';
+            ctx.fillRect(96, 440, 80, 6);
+
+            // Definição com quebra de linha automática
+            ctx.fillStyle = '#1C1917';
+            ctx.font = '400 36px Inter, sans-serif';
+            const nextY = wrapCanvasText(ctx, currentWordObj.definition, 96, 520, width - 192, 52);
+
+            // Exemplo contextualizado
+            const quoteY = Math.max(nextY + 50, 740);
+            ctx.fillStyle = '#8C3B2B';
+            ctx.fillRect(96, quoteY - 28, 6, 130);
+
+            ctx.fillStyle = '#57534E';
+            ctx.font = 'italic 30px "Playfair Display", Georgia, serif';
+            wrapCanvasText(ctx, `“${currentWordObj.example}”`, 126, quoteY + 10, width - 230, 44);
+
+            // Rodapé do Cartão
+            ctx.fillStyle = '#E8E2D9';
+            ctx.fillRect(96, height - 130, width - 192, 2);
+
+            ctx.fillStyle = '#57534E';
+            ctx.font = '500 22px Inter, sans-serif';
+            ctx.fillText('Dicionário da Língua Portuguesa (PT-BR)', 96, height - 82);
+        }
+
+        function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
+            const words = text.split(' ');
+            let line = '';
+            let currentY = y;
+
+            for (let n = 0; n < words.length; n++) {
+                const testLine = line + words[n] + ' ';
+                const metrics = ctx.measureText(testLine);
+                if (metrics.width > maxWidth && n > 0) {
+                    ctx.fillText(line, x, currentY);
+                    line = words[n] + ' ';
+                    currentY += lineHeight;
+                } else {
+                    line = testLine;
+                }
+            }
+            ctx.fillText(line, x, currentY);
+            return currentY + lineHeight;
+        }
+
+        function copyShareText() {
+            const shareText = `📖 *Palavra do Dia — ${currentWordObj.word}* (${currentWordObj.syllables})\n_${currentWordObj.grammarClass}_\n\n${currentWordObj.definition}\n\n💬 “${currentWordObj.example}”`;
+            
+            // Uso de textarea temporário + execCommand para máxima compatibilidade em iframes
+            const textArea = document.createElement("textarea");
+            textArea.value = shareText;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showToast("Texto copiado para a área de transferência!");
+            } catch (err) {
+                showToast("Não foi possível copiar o texto.", "error");
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        function downloadShareImage() {
+            const canvas = document.getElementById('share-canvas');
+            const link = document.createElement('a');
+            link.download = `palavra-do-dia-${currentWordObj.word.toLowerCase()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            showToast("Cartão visual baixado!");
+        }
+
+        /**
+         * TEMA CLARO / ESCURO
+         */
+        function initTheme() {
+            const savedTheme = localStorage.getItem('lexico_theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            const isDark = html.classList.contains('dark');
+            localStorage.setItem('lexico_theme', isDark ? 'dark' : 'light');
+        }
+
+        /**
+         * NOTIFICAÇÕES TOAST ELEGANTES
+         */
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = "px-4 py-3 rounded-xl bg-paper-inkLight dark:bg-paper-inkDark text-paper-light dark:text-paper-dark text-sm font-medium shadow-lg transform transition-all duration-300 translate-y-2 opacity-0 flex items-center gap-2";
+            toast.innerHTML = `<span>${message}</span>`;
+            
+            container.appendChild(toast);
+            
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Fechar modais ao clicar no backdrop
+        window.addEventListener('click', (e) => {
+            if (e.target.id === 'list-modal') closeModal('list-modal');
+            if (e.target.id === 'share-modal') closeModal('share-modal');
+        });
+
+        // Inicialização da aplicação
+        window.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            renderWord(new Date());
+            updateFavoriteBadge();
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        });
+    </script>
+</body>
+</html>
