@@ -1,6 +1,6 @@
 # Léxico Diário — Palavra do Dia (PT-BR)
 
-[<Acesse Léxico Diário>](https://rolim8.github.io/Lexico-Diario/Lexico-Diario.html) 
+[>>Acesse Léxico Diário<<](https://rolim8.github.io/Lexico-Diario/Lexico-Diario.html) 
 ****
 
 Aplicação web editorial e responsiva para descoberta diária de vocabulário em **Português do Brasil**, projetada para entregar **uma única palavra nova por dia** com base na data do sistema.
