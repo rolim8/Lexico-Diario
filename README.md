@@ -1,5 +1,8 @@
 # Léxico Diário — Palavra do Dia (PT-BR)
 
+[<Acesse Léxico Diário>](https://rolim8.github.io/Lexico-Diario/Lexico-Diario.html) 
+****
+
 Aplicação web editorial e responsiva para descoberta diária de vocabulário em **Português do Brasil**, projetada para entregar **uma única palavra nova por dia** com base na data do sistema.
 
 ## ✨ Funcionalidades
@@ -17,38 +20,3 @@ Aplicação web editorial e responsiva para descoberta diária de vocabulário e
 - **HTML5 Semântico**
 - **CSS3** (variáveis customizadas, layout responsivo, temas claro/escuro)
 - **JavaScript (ES6+)** (lógica determinística por data, manipulação do DOM, `Web Speech API`, `localStorage`)
-
-## 📁 Estrutura do Projeto
-
-```text
-.
-├── index.html          # Estrutura principal da aplicação e interface editorial
-├── styles.css          # Estilos, temas claro/escuro, tipografia e layout responsivo
-├── app.js              # Seleção diária por data, acervo lexical, áudio, favoritos e cartão
-└── README.md           # Documentação do projeto
-```
-
-(Nota: se o projeto estiver consolidado em um único arquivo .html, os blocos de estilo e script encontram-se integrados no mesmo documento.)
-🚀 Como Executar
-
-- Baixe ou clone os arquivos do projeto para uma pasta local.
-
-- Abra o arquivo index.html (ou o arquivo .html gerado) diretamente em qualquer navegador moderno (Chrome, Edge, Firefox, Safari).
-
-- Não é necessário servidor backend, instalação de dependências ou chave de API.
-
-🧠 Como Funciona a Regra de "Uma Palavra por Dia"
-
-A seleção da palavra é vinculada ao dia civil (ano-mês-dia) do dispositivo do usuário:
-
-- Enquanto o dia for o mesmo, recarregar a página mantém a mesma palavra.
-
-- Ao mudar o dia (00:00), o índice calculado avança para o próximo verbete do acervo.
-
-📌 Possíveis Melhorias Futuras
-
-- Expandir o acervo lexical com centenas de novos verbetes catalogados.
-
-- Adicionar filtro por classe gramatical ou nível de raridade dentro do histórico/favoritos.
-
-- Exportar o cartão diário diretamente como imagem .png via <canvas>.
