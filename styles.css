@@ -200,10 +200,6 @@ svg {
   background: currentColor;
 }
 
-.day-counter {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-}
 
 .word-card {
   background: var(--surface);

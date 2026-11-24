@@ -288,7 +288,6 @@ function renderEntry(entry) {
   setText("wordDefinition", entry.definition);
   setText("wordExample", entry.example);
   setText("wordEtymology", entry.etymology);
-  setText("dayCycleText", `Dia ${entry.dayNumber} de ${entry.totalWords}`);
 
   renderTags("wordSynonyms", entry.synonyms);
   renderTags("wordAntonyms", entry.antonyms);
