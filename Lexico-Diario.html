@@ -145,6 +145,10 @@
                         <span id="word-class" class="italic font-serif text-paper-accentLight dark:text-paper-accentDark font-medium">
                             —
                         </span>
+                        <span class="text-paper-borderLight dark:text-paper-borderDark">•</span>
+                        <span id="source-indicator" class="text-xs px-2 py-0.5 rounded-md bg-black/[0.03] dark:bg-white/[0.04] text-paper-mutedLight dark:text-paper-mutedDark">
+                            Acervo Local
+                        </span>
                     </div>
                 </div>
 
@@ -283,381 +287,1581 @@
 
     <script>
         /**
-         * BANCO DE DADOS LEXICAL (Português do Brasil)
-         * Palavras ricas, expressivas e cuidadosamente selecionadas com metadados completos.
+         * BANCO DE DADOS LEXICAL (Português do Brasil - 125 verbetes únicos)
+         * Padronizado com: word, syllables, pos, definition, synonyms, antonyms, etymology, example.
+         * Atua como acervo principal embutido e fallback automático caso palavras.json não exista.
          */
-        const DICTIONARY = [
+        const BUILTIN_DICTIONARY = [
             {
                 word: "Efêmero",
                 syllables: "e·fê·me·ro",
-                grammarClass: "adjetivo",
+                pos: "adjetivo",
                 definition: "Que tem duração muito curta; passageiro, transitório, fugaz. Aquilo que dura apenas um dia ou um breve instante.",
                 synonyms: ["passageiro", "transitório", "fugaz", "breve", "momentâneo"],
                 antonyms: ["eterno", "perene", "duradouro", "perpétuo"],
-                etymology: "Do grego 'ephémeros', formado por 'epí' (sobre) e 'hēméra' (dia), significando literalmente 'o que dura apenas um dia'. Na biologia, dá nome às efeméridas, insetos cuja fase adulta dura poucas horas.",
+                etymology: "Do grego 'ephémeros', formado por 'epí' (sobre) e 'hēméra' (dia), significando literalmente 'o que dura apenas um dia'.",
                 example: "O brilho dourado do crepúsculo sobre o mar é um espetáculo tão efêmero quanto inesquecível."
             },
             {
                 word: "Saudade",
                 syllables: "sau·da·de",
-                grammarClass: "substantivo feminino",
+                pos: "substantivo feminino",
                 definition: "Sentimento melancólico e afetuoso causado pela distância ou ausência de alguém, de um lugar, de uma época ou de algo querido.",
                 synonyms: ["nostalgia", "melancolia", "lembrança", "ausência", "anseio"],
                 antonyms: ["indiferença", "desapego", "esquecimento"],
-                etymology: "Origina-se do latim 'solitate' (solidão), que evoluiu no galego-português para 'soidade' e posteriormente 'saudade', influenciado por 'saudar'. É frequentemente citada como uma das palavras mais emblemáticas da lusofonia.",
+                etymology: "Do latim 'solitate' (solidão), evoluindo no galego-português para 'soidade' e posteriormente 'saudade'.",
                 example: "Ao abrir o velho álbum de fotografias, uma saudade serena preencheu o silêncio da sala."
             },
             {
                 word: "Cafuné",
                 syllables: "ca·fu·né",
-                grammarClass: "substantivo masculino",
-                definition: "Ato de acariciar delicadamente a cabeça ou os cabelos de alguém com as pontas dos dedos, geralmente provocando sono ou relaxamento.",
+                pos: "substantivo masculino",
+                definition: "Ato de acariciar delicadamente a cabeça ou os cabelos de alguém com as pontas dos dedos, provocando relaxamento ou sono.",
                 synonyms: ["carinho", "afago", "carícia", "mimo", "meiguice"],
                 antonyms: ["aspereza", "brutalidade", "desafeto"],
-                etymology: "Termo genuinamente brasileiro vindo do quimbundo 'kifunate', que significa estalar ou torcer levemente os dedos na cabeça para produzir relaxamento. Incorporado ao português do Brasil durante o período colonial.",
+                etymology: "Do quimbundo 'kifunate', ligado ao ato de estalar ou mover suavemente os dedos na cabeça; incorporou-se ao português do Brasil.",
                 example: "Depois de um dia exaustivo, tudo o que ela precisava era de um cafuné tranquilo no sofá."
             },
             {
                 word: "Serendipidade",
                 syllables: "se·ren·di·pi·da·de",
-                grammarClass: "substantivo feminino",
-                definition: "A capacidade ou o acaso feliz de fazer descobertas valiosas e agradáveis de forma inesperada, enquanto se procurava outra coisa.",
+                pos: "substantivo feminino",
+                definition: "Capacidade ou acaso feliz de fazer descobertas valiosas e agradáveis de forma inesperada, enquanto se procurava outra coisa.",
                 synonyms: ["acaso feliz", "fortuna", "achado", "providência", "sorte"],
                 antonyms: ["infortúnio", "azar", "planejamento"],
-                etymology: "Cunhada em 1754 pelo escritor inglês Horace Walpole a partir do conto persa 'Os Três Príncipes de Serendip' (antigo nome do Sri Lanka), cujos protagonistas faziam descobertas por sagacidade e acidente.",
+                etymology: "Cunhada no século XVIII a partir do conto persa 'Os Três Príncipes de Serendip', cujos protagonistas faziam descobertas por sagacidade e acaso.",
                 example: "Encontrar aquela livraria escondida numa viela desconhecida foi pura serendipidade."
             },
             {
                 word: "Alvíssaras",
                 syllables: "al·vís·sa·ras",
-                grammarClass: "substantivo feminino plural",
-                definition: "Expressão de alegria por uma boa notícia; recompensa ou gratificação dada a quem traz uma novidade muito esperada e feliz.",
+                pos: "substantivo feminino plural",
+                definition: "Expressão de alegria por uma boa notícia; recompensa ou gratificação dada a quem traz uma novidade feliz e esperada.",
                 synonyms: ["boas-novas", "júbilo", "recompensa", "felicitação", "alegria"],
                 antonyms: ["pesar", "luto", "desgraça", "má notícia"],
-                etymology: "Do árabe 'al-bixâra', que significa 'a boa notícia'. Na tradição ibérica medieval, mensageiros que anunciavam vitórias ou nascimentos reais recebiam alvíssaras em moedas ou presentes.",
+                etymology: "Do árabe 'al-bixâra', que significa 'a boa notícia'. Na tradição antiga, mensageiros de boas novas recebiam alvíssaras.",
                 example: "Alvíssaras! O projeto foi finalmente aprovado após meses de espera."
             },
             {
                 word: "Inexorável",
                 syllables: "i·ne·xo·rá·vel",
-                grammarClass: "adjetivo de dois gêneros",
+                pos: "adjetivo de dois gêneros",
                 definition: "Que não se deixa comover por súplicas ou rogos; implacável, rigoroso, inevitável e impossível de deter.",
                 synonyms: ["implacável", "inevitável", "inflexível", "irrevogável", "rigoroso"],
                 antonyms: ["flexível", "complacente", "clemência", "evitável"],
-                etymology: "Do latim 'inexorabilis', composto pelo prefixo de negação 'in-' e 'exorabilis' (que pode ser convencido por preces). Originalmente aplicava-se aos deuses ou juízes irredutíveis.",
+                etymology: "Do latim 'inexorabilis', formado por 'in-' (negação) e 'exorabilis' (que pode ser convencido por preces).",
                 example: "A passagem inexorável do tempo transforma todas as paisagens e memórias."
             },
             {
                 word: "Plenitude",
                 syllables: "ple·ni·tu·de",
-                grammarClass: "substantivo feminino",
+                pos: "substantivo feminino",
                 definition: "Estado do que é inteiro, completo ou absoluto; sensação profunda de realização, abundância e harmonia interior.",
                 synonyms: ["totalidade", "inteireza", "completude", "abundância", "apogeu"],
                 antonyms: ["vazio", "escassez", "incompletude", "carência"],
-                etymology: "Do latim 'plenitudo', derivado de 'plenus' (cheio). Na filosofia clássica, designa a perfeição de um ser que atingiu todo o seu potencial.",
+                etymology: "Do latim 'plenitudo', derivado de 'plenus' (cheio, completo).",
                 example: "Sentia uma rara plenitude ao contemplar a obra concluída após anos de dedicação."
             },
             {
                 word: "Idílico",
                 syllables: "i·dí·li·co",
-                grammarClass: "adjetivo",
+                pos: "adjetivo",
                 definition: "Que possui encanto poético, campestre e harmonioso; idealizado, sereno e paradisíaco.",
-                synonyms: ["bucólico", "pastoril", "paradisiaco", "poético", "sereno"],
+                synonyms: ["bucólico", "pastoril", "paradisíaco", "poético", "sereno"],
                 antonyms: ["caótico", "inhóspito", "sombrio", "urbano"],
-                etymology: "Do grego 'eidýllion' (pequeno quadro ou poema curto), popularizado pelo poeta Teócrito no século III a.C. para descrever cenas tranquilas da vida no campo.",
+                etymology: "Do grego 'eidýllion' (pequeno quadro ou poema curto), consagrado na poesia pastoril para cenas tranquilas da natureza.",
                 example: "Passaram as férias em um vilarejo idílico cercado por montanhas e pomares."
             },
             {
                 word: "Resiliência",
                 syllables: "re·si·li·ên·ci·a",
-                grammarClass: "substantivo feminino",
-                definition: "Capacidade de se recuperar rapidamente de adversidades, traumas ou mudanças bruscas; propriedade física de um material voltar ao estado original após deformação.",
+                pos: "substantivo feminino",
+                definition: "Capacidade de superar adversidades, adaptar-se a mudanças bruscas e recuperar-se de pressões ou traumas.",
                 synonyms: ["superação", "elasticidade", "adaptabilidade", "fortaleza", "resistência"],
                 antonyms: ["fragilidade", "rigidez", "vulnerabilidade"],
-                etymology: "Do latim 'resilire' (saltar para trás, recuar). Começou como termo da física e engenharia no século XIX antes de ser adotado pela psicologia moderna.",
+                etymology: "Do latim 'resilire' (saltar para trás, recuar), termo da física e engenharia adotado amplamente pela psicologia.",
                 example: "A resiliência daquela comunidade permitiu reconstruir toda a vila após a tempestade."
             },
             {
                 word: "Inefável",
                 syllables: "i·ne·fá·vel",
-                grammarClass: "adjetivo de dois gêneros",
+                pos: "adjetivo de dois gêneros",
                 definition: "Que não se pode exprimir ou descrever por meio de palavras devido à sua beleza, intensidade ou sublimidade.",
                 synonyms: ["indizível", "inexprimível", "sublime", "indescritível", "transcendente"],
                 antonyms: ["exprimível", "descritível", "comum", "trivial"],
-                etymology: "Do latim 'ineffabilis', formado por 'in-' (não) e 'effabilis' (que pode ser dito, de 'effari', falar). Muito usado na poesia mística para descrever o sagrado.",
+                etymology: "Do latim 'ineffabilis', de 'in-' (não) e 'effabilis' (que pode ser dito, de 'effari', falar).",
                 example: "Havia uma alegria inefável no olhar da pianista ao tocar os últimos acordes da sinfonia."
             },
             {
                 word: "Quintessência",
                 syllables: "quin·tes·sên·ci·a",
-                grammarClass: "substantivo feminino",
-                definition: "O que há de mais puro, essencial e refinado em algo; o extrato mais concentrado de uma ideia, qualidade ou substância.",
+                pos: "substantivo feminino",
+                definition: "O que há de mais puro, essencial e refinado em algo; o extrato mais concentrado de uma ideia ou qualidade.",
                 synonyms: ["essência", "apogeu", "suprassumo", "extrato", "perfeição"],
                 antonyms: ["superficialidade", "impureza", "trivialidade"],
-                etymology: "Do latim medieval 'quinta essentia' (quinta essência). Na filosofia aristotélica e na alquimia, era o quinto elemento celeste (o éter), superior à terra, água, fogo e ar.",
-                example: "Aquele pequeno conto representa a quintessência da literatura machadiana."
+                etymology: "Do latim medieval 'quinta essentia' (quinta essência), referindo-se ao éter celeste na cosmologia clássica.",
+                example: "Aquele pequeno conto representa a quintessência da literatura brasileira."
             },
             {
                 word: "Sempiterno",
                 syllables: "sem·pi·ter·no",
-                grammarClass: "adjetivo",
+                pos: "adjetivo",
                 definition: "Que dura para sempre; que não tem fim, eterno, perpétuo e contínuo.",
                 synonyms: ["eterno", "perpétuo", "perene", "imortal", "infinito"],
                 antonyms: ["efêmero", "finito", "passageiro", "mortal"],
-                etymology: "Do latim 'sempiternus', junção de 'semper' (sempre) e 'aeternus' (eterno), reforçando a ideia de continuidade infinita.",
+                etymology: "Do latim 'sempiternus', união de 'semper' (sempre) e 'aeternus' (eterno).",
                 example: "As estrelas parecem testemunhas sempiternas da história da humanidade."
             },
             {
                 word: "Zéfiro",
                 syllables: "zé·fi·ro",
-                grammarClass: "substantivo masculino",
-                definition: "Vento suave, fresco e agradável; brisa ligeira e amena que sopra do ocidente.",
+                pos: "substantivo masculino",
+                definition: "Vento suave, fresco e agradável; brisa ligeira e amena.",
                 synonyms: ["brisa", "aragem", "viração", "sopro", "aura"],
                 antonyms: ["vendaval", "furacão", "tempestade", "tormenta"],
-                etymology: "Na mitologia grega, Zéfiro ('Zéphyros') era a personificação do vento oeste, mensageiro da primavera e o mais gentil dos ventos.",
+                etymology: "Do grego 'Zéphyros', personificação mitológica do vento oeste, suave e anunciador da primavera.",
                 example: "Um zéfiro perfumado pelas flores do jardim entrou pela janela aberta da biblioteca."
             },
             {
                 word: "Bálsamo",
                 syllables: "bál·sa·mo",
-                grammarClass: "substantivo masculino",
-                definition: "Substância aromática usada para aliviar dores; figurativamente, tudo aquilo que traz conforto, consolo e alívio moral.",
+                pos: "substantivo masculino",
+                definition: "Substância aromática usada para aliviar dores; figurativamente, tudo o que traz conforto, consolo e alívio moral.",
                 synonyms: ["consolo", "alívio", "lenitivo", "conforto", "unguento"],
                 antonyms: ["tormento", "aflição", "martírio", "veneno"],
-                etymology: "Do grego 'bálsamon', designando a resina perfumada extraída de árvores do Oriente Médio, historicamente valorizada por suas propriedades curativas.",
+                etymology: "Do grego 'bálsamon', resina perfumada de alto valor medicinal e simbólico na Antiguidade.",
                 example: "Suas palavras sábias e acolhedoras funcionaram como um bálsamo para o coração aflito."
             },
             {
                 word: "Nefelibata",
                 syllables: "ne·fe·li·ba·ta",
-                grammarClass: "substantivo e adjetivo de dois gêneros",
+                pos: "substantivo e adjetivo de dois gêneros",
                 definition: "Pessoa que vive nas nuvens, alheia à realidade prática, entregue a devaneios, fantasias e idealismos.",
                 synonyms: ["sonhador", "devaneador", "utópico", "distraído", "idealista"],
                 antonyms: ["pragmático", "realista", "pé no chão", "objetivo"],
-                etymology: "Do grego 'nephéle' (nuvem) e 'bátes' (aquele que anda), significando literalmente 'aquele que caminha sobre as nuvens'.",
-                example: "Como um verdadeiro nefelibata, passava as tardes escrevendo versos enquanto observava as nuvens."
+                etymology: "Do grego 'nephéle' (nuvem) e 'bátes' (aquele que anda), significando literalmente 'andarilho das nuvens'.",
+                example: "Como um verdadeiro nefelibata, passava as tardes escrevendo versos enquanto observava o céu."
             },
             {
                 word: "Onírico",
                 syllables: "o·ní·ri·co",
-                grammarClass: "adjetivo",
+                pos: "adjetivo",
                 definition: "Relativo aos sonhos ou que possui a atmosfera fantástica, surreal e fluida própria de um sonho.",
                 synonyms: ["fantástico", "surreal", "imaginário", "ilusório", "mágico"],
                 antonyms: ["real", "concreto", "palpável", "material"],
-                etymology: "Do grego 'óneiros' (sonho). Na mitologia grega, os Oniros eram as divindades responsáveis por enviar sonhos aos mortais.",
-                example: "As pinturas surrealistas criam paisagens oníricas onde o tempo parece derreter."
+                etymology: "Do grego 'óneiros' (sonho), ligado às figuras mitológicas dos Oniros.",
+                example: "As pinturas criam paisagens oníricas onde o tempo parece fluir sem relógio."
             },
             {
                 word: "Magnânimo",
                 syllables: "mag·nâ·ni·mo",
-                grammarClass: "adjetivo",
-                definition: "Que possui grandeza de alma; generoso, nobre, clemente e disposto a perdoar ofensas com elevação moral.",
+                pos: "adjetivo",
+                definition: "Que possui grandeza de alma; generoso, nobre, clemente e disposto a perdoar com elevação moral.",
                 synonyms: ["generoso", "nobre", "altruísta", "clemente", "benevolente"],
                 antonyms: ["mesquinho", "vingativo", "egoísta", "pequeno"],
-                etymology: "Do latim 'magnanimus', composto por 'magnus' (grande) e 'animus' (alma, espírito). Para Aristóteles, a magnanimidade era a coroa das virtudes.",
+                etymology: "Do latim 'magnanimus', composto por 'magnus' (grande) e 'animus' (alma, espírito).",
                 example: "Mesmo diante das críticas injustas, o mestre mostrou-se magnânimo e acolheu os aprendizes."
             },
             {
                 word: "Taciturno",
                 syllables: "ta·ci·tur·no",
-                grammarClass: "adjetivo",
-                definition: "Que fala pouco; silencioso, reservado, introspectivo e com tendência à melancolia ou seriedade.",
+                pos: "adjetivo",
+                definition: "Que fala pouco; silencioso, reservado, introspectivo e de ar grave ou melancólico.",
                 synonyms: ["silencioso", "calado", "introspectivo", "reservado", "sombrio"],
                 antonyms: ["loquaz", "falante", "expansivo", "comunicativo"],
-                etymology: "Do latim 'taciturnus', derivado de 'tacitus' (silencioso, calado), de onde também vem a palavra 'tácito'.",
+                etymology: "Do latim 'taciturnus', derivado de 'tacitus' (silencioso, calado).",
                 example: "O velho faroleiro era um homem taciturno, mas de olhar profundamente atento."
             },
             {
                 word: "Ubíquo",
                 syllables: "u·bí·quo",
-                grammarClass: "adjetivo",
+                pos: "adjetivo",
                 definition: "Que está ou parece estar presente em todos os lugares ao mesmo tempo; onipresente.",
                 synonyms: ["onipresente", "omnipresente", "universal", "difundido"],
                 antonyms: ["ausente", "restrito", "localizado", "raro"],
-                etymology: "Do latim 'ubique' (em toda parte). Deu origem também ao termo 'computação ubíqua', usado na tecnologia moderna.",
+                etymology: "Do latim 'ubique' (em toda parte).",
                 example: "Na era digital, o acesso à informação tornou-se praticamente ubíquo."
             },
             {
                 word: "Verossímil",
                 syllables: "ve·ros·sí·mil",
-                grammarClass: "adjetivo de dois gêneros",
-                definition: "Que parece verdadeiro; plausível, provável e coerente com a realidade ou com a lógica interna de uma narrativa.",
+                pos: "adjetivo de dois gêneros",
+                definition: "Que parece verdadeiro; plausível, provável e coerente com a realidade ou com a lógica de uma narrativa.",
                 synonyms: ["plausível", "provável", "crível", "coerente", "aceitável"],
                 antonyms: ["inverossímil", "absurdo", "improvável", "fantasioso"],
-                etymology: "Do latim 'verisimilis', junção de 'verus' (verdadeiro) e 'similis' (semelhante). Conceito central na Poética de Aristóteles.",
-                example: "Embora fosse uma obra de ficção, a trama era tão bem construída que parecia inteiramente verossímil."
+                etymology: "Do latim 'verisimilis', formado por 'verus' (verdadeiro) e 'similis' (semelhante).",
+                example: "Embora fosse uma obra de ficção, a trama era tão bem construída que parecia verossímil."
             },
             {
                 word: "Zênite",
                 syllables: "zê·ni·te",
-                grammarClass: "substantivo masculino",
-                definition: "Ponto mais alto da esfera celeste situado exatamente acima da cabeça do observador; figurativamente, o ponto culminante ou apogeu.",
+                pos: "substantivo masculino",
+                definition: "Ponto mais alto da esfera celeste acima do observador; figurativamente, o ponto culminante ou apogeu.",
                 synonyms: ["apogeu", "auge", "ápice", "cume", "pináculo"],
                 antonyms: ["nadir", "declínio", "base", "ocaso"],
-                etymology: "Do árabe 'samt ar-ra's' (direção da cabeça), que sofreu erro de transcrição pelos copistas latinos medievais de 'semt' para 'zenit'.",
-                example: "Ao meio-dia, o sol atingiu o zênite, eliminando quase todas as sombras da praça."
+                etymology: "Do árabe 'samt ar-ra's' (direção da cabeça), adaptado via latim medieval.",
+                example: "Ao meio-dia, o sol atingiu o zênite, encurtando as sombras da praça."
             },
             {
                 word: "Alvorada",
                 syllables: "al·vo·ra·da",
-                grammarClass: "substantivo feminino",
-                definition: "O primeiro clarão da manhã antes do nascer do sol; início de um novo dia ou de uma nova era.",
+                pos: "substantivo feminino",
+                definition: "O primeiro clarão da manhã antes do nascer do sol; início de um novo dia ou de uma nova fase.",
                 synonyms: ["amanhecer", "aurora", "madrugada", "alba", "despontar"],
                 antonyms: ["crepúsculo", "anoitecer", "ocaso", "poente"],
-                etymology: "Derivado de 'alvor' (brancura, claridade), do latim 'albor' (branco). Na cultura brasileira, batiza também o palácio presidencial em Brasília.",
-                example: "Os pássaros começaram a cantar antes mesmo que os primeiros tons da alvorada pintassem o horizonte."
+                etymology: "Derivado de 'alvor' (brancura, claridade), do latim 'albor' (branco).",
+                example: "Os pássaros começaram a cantar antes mesmo que os primeiros tons da alvorada surgissem."
             },
             {
                 word: "Eloquente",
                 syllables: "e·lo·quen·te",
-                grammarClass: "adjetivo de dois gêneros",
-                definition: "Que fala ou escreve com fluência, persuasão e elegância; que expressa algo de forma muito clara e comovente.",
+                pos: "adjetivo de dois gêneros",
+                definition: "Que fala ou escreve com fluência, persuasão e elegância; expressivo e comovente.",
                 synonyms: ["persuasivo", "expressivo", "fluente", "convincente", "retórico"],
                 antonyms: ["inexpressivo", "hesitante", "lacônico", "apático"],
-                etymology: "Do latim 'eloquens', particípio de 'eloqui' (falar com clareza, exprimir-se plenamente).",
-                example: "O silêncio da plateia ao final do discurso foi a prova mais eloquente do impacto de suas palavras."
+                etymology: "Do latim 'eloquens', particípio de 'eloqui' (falar com clareza, exprimir-se).",
+                example: "O silêncio da plateia ao final do discurso foi a prova mais eloquente do impacto das ideias."
             },
             {
                 word: "Límpido",
                 syllables: "lím·pi·do",
-                grammarClass: "adjetivo",
+                pos: "adjetivo",
                 definition: "Claro, transparente e sem impurezas; puro, sereno e de fácil compreensão.",
                 synonyms: ["cristalino", "transparente", "puro", "claro", "nítido"],
                 antonyms: ["turvo", "opaco", "obscuro", "sujo"],
-                etymology: "Do latim 'limpidus' (claro como a água). Na antiguidade romana, 'lymphae' eram as divindades das águas puras e cristalinas.",
-                example: "A água límpida do riacho permitia ver cada seixo colorido no fundo."
+                etymology: "Do latim 'limpidus' (claro, límpido, cristalino).",
+                example: "A água límpida do riacho permitia enxergar cada seixo no fundo."
             },
             {
                 word: "Quimera",
                 syllables: "qui·me·ra",
-                grammarClass: "substantivo feminino",
-                definition: "Sonho irrealizável, fantasia ou criação da imaginação sem fundamento na realidade; na mitologia, criatura híbrida fabulosa.",
+                pos: "substantivo feminino",
+                definition: "Sonho irrealizável, fantasia sem fundamento na realidade; na mitologia, criatura híbrida fabulosa.",
                 synonyms: ["utopia", "ilusão", "fantasia", "devaneio", "miragem"],
                 antonyms: ["realidade", "certeza", "fato", "concretude"],
-                etymology: "Do grego 'Chímaira', monstro mitológico com cabeça de leão, corpo de cabra e cauda de serpente, derrotado por Belerofonte.",
-                example: "Perseguir a perfeição absoluta muitas vezes significa correr atrás de uma quimera."
+                etymology: "Do grego 'Chímaira', ser fabuloso da mitologia grega.",
+                example: "Buscar um atalho sem esforço para grandes conquistas costuma ser uma quimera."
             },
             {
                 word: "Recôndito",
                 syllables: "re·côn·di·to",
-                grammarClass: "adjetivo e substantivo masculino",
-                definition: "Escondido, profundo, íntimo e de difícil acesso; o lugar mais secreto da mente ou da natureza.",
+                pos: "adjetivo e substantivo masculino",
+                definition: "Escondido, profundo, íntimo e de difícil acesso; o lugar mais reservado da mente ou de um espaço.",
                 synonyms: ["oculto", "íntimo", "profundo", "secreto", "retirado"],
                 antonyms: ["expresso", "manifesto", "superficial", "visível"],
-                etymology: "Do latim 'reconditus' (escondido, guardado com cuidado), particípio de 'recondere'.",
-                example: "Aquela melodia despertou memórias guardadas no canto mais recôndito da infância."
+                etymology: "Do latim 'reconditus' (escondido, guardado, recolhido).",
+                example: "Aquela canção despertou lembranças guardadas no canto mais recôndito da memória."
             },
             {
                 word: "Cândido",
                 syllables: "cân·di·do",
-                grammarClass: "adjetivo",
+                pos: "adjetivo",
                 definition: "Que possui pureza, inocência e ingenuidade; muito branco, puro e sincero.",
                 synonyms: ["puro", "ingênuo", "inocente", "sincero", "alvo"],
                 antonyms: ["malicioso", "astuto", "corrompido", "dissimulado"],
-                etymology: "Do latim 'candidus' (branco brilhante). Na Roma Antiga, os candidatos a cargos públicos vestiam togas brancas ('toga candida') para simbolizar pureza de intenções.",
-                example: "Respondeu à pergunta complexa com um sorriso cândido e desarmante."
+                etymology: "Do latim 'candidus' (branco brilhante, puro).",
+                example: "Respondeu à pergunta com um sorriso cândido e desarmante."
             },
             {
                 word: "Fulgor",
                 syllables: "ful·gor",
-                grammarClass: "substantivo masculino",
-                definition: "Brilho intenso, clarão vivo e resplandecente; esplendor, glória ou vivacidade intelectual.",
+                pos: "substantivo masculino",
+                definition: "Brilho intenso, clarão vivo e resplandecente; esplendor ou vivacidade intelectual.",
                 synonyms: ["brilho", "esplendor", "resplendor", "luminosidade", "clarão"],
                 antonyms: ["opacidade", "escuridão", "penumbra", "apagamento"],
-                etymology: "Do latim 'fulgor' (relâmpago, clarão), derivado do verbo 'fulgere' (brilhar intensamente).",
-                example: "O fulgor das ideias renascentistas iluminou séculos de arte e ciência na Europa."
+                etymology: "Do latim 'fulgor' (clarão, relâmpago), de 'fulgere' (brilhar).",
+                example: "O fulgor da manhã iluminou os telhados antigos da cidade."
             },
             {
                 word: "Gáudio",
                 syllables: "gáu·di·o",
-                grammarClass: "substantivo masculino",
+                pos: "substantivo masculino",
                 definition: "Alegria intensa, júbilo, contentamento profundo e satisfação íntima.",
                 synonyms: ["júbilo", "alegria", "contentamento", "regozijo", "deleite"],
                 antonyms: ["tristeza", "pesar", "desgosto", "melancolia"],
-                etymology: "Do latim 'gaudium' (alegria íntima e serena), termo usado no hino universitário tradicional 'Gaudeamus igitur' ('Alegremo-nos, pois').",
-                example: "Para gáudio de todos os leitores, a biblioteca histórica reabriu suas portas restauradas."
+                etymology: "Do latim 'gaudium' (alegria íntima, júbilo).",
+                example: "Para gáudio dos leitores, a biblioteca histórica reabriu suas portas."
             },
             {
                 word: "Haurir",
                 syllables: "hau·rir",
-                grammarClass: "verbo transitivo",
-                definition: "Absorver, aspirar ou beber profundamente; extrair conhecimento, inspiração ou energia de uma fonte.",
+                pos: "verbo transitivo",
+                definition: "Absorver, aspirar ou beber profundamente; extrair conhecimento, inspiração ou experiência de uma fonte.",
                 synonyms: ["absorver", "sorver", "extrair", "assimilar", "aspirar"],
                 antonyms: ["expelir", "desperdiçar", "verter", "esgotar"],
-                etymology: "Do latim 'haurire' (tirar água de um poço, sorver). É um verbo defectivo na língua portuguesa, utilizado apenas nas formas em que a raiz é seguida de 'i' ou 'e'.",
-                example: "Durante sua viagem pelo interior, procurou haurir toda a sabedoria dos artesãos locais."
+                etymology: "Do latim 'haurire' (tirar água, sorver, extrair).",
+                example: "Durante a viagem, procurou haurir toda a sabedoria dos artesãos locais."
             },
             {
                 word: "Lânguido",
                 syllables: "lân·gui·do",
-                grammarClass: "adjetivo",
-                definition: "Que revela moleza suave, cansaço agradável, doçura melancólica ou falta de vigor físico.",
+                pos: "adjetivo",
+                definition: "Que revela moleza suave, cansaço agradável, doçura melancólica ou falta de vigor.",
                 synonyms: ["abatido", "suave", "indolente", "brando", "melancólico"],
                 antonyms: ["enérgico", "vigoroso", "vivaz", "intenso"],
-                etymology: "Do latim 'languidus' (fraco, sem vigor, suave), ligado ao verbo 'languere' (estar frouxo ou cansado).",
-                example: "A tarde quente de domingo convidava a um descanso lânguido na rede da varanda."
+                etymology: "Do latim 'languidus' (fraco, frouxo, suave).",
+                example: "A tarde morna convidava a um descanso lânguido na varanda."
             },
             {
                 word: "Pletora",
                 syllables: "ple·to·ra",
-                grammarClass: "substantivo feminino",
-                definition: "Superabundância, excesso ou grande quantidade de algo; originalmente, excesso de sangue ou humores no organismo.",
+                pos: "substantivo feminino",
+                definition: "Superabundância, excesso ou grande quantidade de algo.",
                 synonyms: ["superabundância", "excesso", "profusão", "fartura", "exuberância"],
                 antonyms: ["escassez", "penúria", "falta", "carência"],
-                etymology: "Do grego 'plethóre' (plenitude, saciedade), derivado de 'pléthein' (estar cheio).",
-                example: "Vivemos em uma época marcada por uma pletora de informações disponíveis a cada segundo."
+                etymology: "Do grego 'plethóre' (plenitude, saciedade).",
+                example: "A biblioteca reunia uma pletora de obras raras sobre história natural."
             },
             {
                 word: "Benevolência",
                 syllables: "be·ne·vo·lên·ci·a",
-                grammarClass: "substantivo feminino",
+                pos: "substantivo feminino",
                 definition: "Disposição favorável e bondosa para com os outros; boa vontade, indulgência e gentileza.",
                 synonyms: ["bondade", "gentileza", "beneplácito", "altruísmo", "cordialidade"],
                 antonyms: ["malevolência", "hostilidade", "rancor", "crueldade"],
-                etymology: "Do latim 'benevolentia', formado por 'bene' (bem) e 'volens' (que quer), significando literalmente 'querer o bem'.",
-                example: "A professora corrigia os erros dos alunos sempre com paciência e benevolência."
+                etymology: "Do latim 'benevolentia', de 'bene' (bem) e 'volens' (que quer).",
+                example: "A professora orientava os estudantes com paciência e benevolência."
             },
             {
                 word: "Desiderato",
                 syllables: "de·si·de·ra·to",
-                grammarClass: "substantivo masculino",
+                pos: "substantivo masculino",
                 definition: "Aquilo que se deseja ardentemente alcançar; aspiração legítima, objetivo ou ideal almejado.",
                 synonyms: ["aspiração", "objetivo", "anseio", "meta", "desejo"],
                 antonyms: ["rejeição", "aversão", "desinteresse"],
-                etymology: "Do latim 'desideratum' (coisa desejada), particípio passado neutro de 'desiderare' (sentir falta de, desejar).",
-                example: "A democratização da leitura sempre foi o principal desiderato de sua carreira."
+                etymology: "Do latim 'desideratum' (coisa desejada).",
+                example: "A ampliação do acesso à leitura sempre foi o principal desiderato do projeto."
             },
             {
                 word: "Sutileza",
                 syllables: "su·ti·le·za",
-                grammarClass: "substantivo feminino",
-                definition: "Qualidade do que é delicado, fino, perspicaz ou quase imperceptível; argúcia de espírito.",
+                pos: "substantivo feminino",
+                definition: "Qualidade do que é delicado, fino, perspicaz ou quase imperceptível.",
                 synonyms: ["delicadeza", "perspicácia", "finura", "argúcia", "nuance"],
                 antonyms: ["grosseria", "brutalidade", "obviedade", "rudeza"],
-                etymology: "Do latim 'subtilitas', derivado de 'subtilis' (tecido finamente, delicado; originalmente o fio que passa por baixo da teia).",
-                example: "A beleza daquela conversa residia na sutileza dos gestos não ditos."
+                etymology: "Do latim 'subtilitas', derivado de 'subtilis' (fino, delicado, penetrante).",
+                example: "O encanto da crônica estava na sutileza das observações cotidianas."
             },
             {
                 word: "Xodó",
                 syllables: "xo·dó",
-                grammarClass: "substantivo masculino",
-                definition: "Pessoa ou coisa pela qual se tem grande afeição, carinho especial ou predileção; namorado ou bem-querer.",
+                pos: "substantivo masculino",
+                definition: "Pessoa ou coisa pela qual se tem grande afeição, carinho especial ou predileção.",
                 synonyms: ["predileto", "querido", "afeto", "chamego", "paixão"],
                 antonyms: ["antipatia", "desafeto", "aversão"],
-                etymology: "Palavra tipicamente brasileira, provavelmente originada de línguas africanas (como o iorubá ou quimbundo) trazidas ao Brasil, incorporada ao vocabulário afetivo nacional.",
-                example: "O pequeno jardim de ervas aromáticas na sacada tornou-se o xodó da casa."
+                etymology: "Palavra afetiva do português brasileiro com provável origem em línguas africanas trazidas ao Brasil.",
+                example: "O pequeno jardim de ervas na sacada tornou-se o xodó da casa."
+            },
+            {
+                word: "Acolhimento",
+                syllables: "a·co·lhi·men·to",
+                pos: "substantivo masculino",
+                definition: "Ato ou efeito de acolher; recepção calorosa, amparo e atenção oferecida a alguém.",
+                synonyms: ["recepção", "amparo", "hospitalidade", "agasalho", "acolhida"],
+                antonyms: ["rejeição", "hostilidade", "abandono", "desamparo"],
+                etymology: "Derivado de 'acolher', do latim 'accolligere' (reunir junto a si).",
+                example: "O acolhimento da equipe fez toda a diferença nos primeiros dias na nova cidade."
+            },
+            {
+                word: "Admoestar",
+                syllables: "ad·mo·es·tar",
+                pos: "verbo transitivo",
+                definition: "Advertir com brandura ou severidade; aconselhar ou repreender visando corrigir uma conduta.",
+                synonyms: ["advertir", "repreender", "aconselhar", "exortar", "censurar"],
+                antonyms: ["elogiar", "aprovar", "louvar", "incentivar"],
+                etymology: "Do latim 'admonestare', variante de 'admonere' (advertir, lembrar).",
+                example: "O treinador admoestou o grupo sobre a importância de manter a disciplina."
+            },
+            {
+                word: "Afável",
+                syllables: "a·fá·vel",
+                pos: "adjetivo de dois gêneros",
+                definition: "Amável no trato, cortês, afetuoso e de fácil comunicação.",
+                synonyms: ["amável", "cortês", "cordial", "afetuoso", "gentil"],
+                antonyms: ["rude", "áspero", "grosseiro", "arredio"],
+                etymology: "Do latim 'affabilis' (com quem se pode falar facilmente, amável).",
+                example: "Seu jeito afável conquistava a confiança de clientes e colegas logo no primeiro encontro."
+            },
+            {
+                word: "Altruísmo",
+                syllables: "al·tru·ís·mo",
+                pos: "substantivo masculino",
+                definition: "Disposição desinteressada de ajudar o próximo ou promover o bem comum, acima do próprio interesse.",
+                synonyms: ["generosidade", "abnegação", "filantropia", "desprendimento", "solidariedade"],
+                antonyms: ["egoísmo", "egocentrismo", "avareza", "mesquinharia"],
+                etymology: "Cunhado no século XIX a partir do italiano 'altrui' e do latim 'alter' (outro).",
+                example: "O altruísmo dos voluntários manteve o mutirão ativo durante todo o inverno."
+            },
+            {
+                word: "Âmago",
+                syllables: "â·ma·go",
+                pos: "substantivo masculino",
+                definition: "Parte mais interna e central de algo; essência, cerne ou sentido profundo.",
+                synonyms: ["cerne", "essência", "núcleo", "centro", "íntimo"],
+                antonyms: ["superfície", "exterior", "casca", "periferia"],
+                etymology: "Do latim 'anima' (alma, sopro vital, interior).",
+                example: "A discussão tocou no âmago do problema sem desviar para questões secundárias."
+            },
+            {
+                word: "Anelo",
+                syllables: "a·ne·lo",
+                pos: "substantivo masculino",
+                definition: "Desejo vivo, aspiração intensa ou anseio profundo por algo.",
+                synonyms: ["anseio", "desejo", "aspiração", "cobiça", "ardor"],
+                antonyms: ["apatia", "indiferença", "desinteresse"],
+                etymology: "Do latim 'anhelare' (respirar ofegantemente, desejar com ardor).",
+                example: "Nutria o anelo antigo de percorrer a pé os caminhos da serra."
+            },
+            {
+                word: "Ardil",
+                syllables: "ar·dil",
+                pos: "substantivo masculino",
+                definition: "Astúcia, estratagema ou manobra engenhosa para alcançar um fim ou enganar alguém.",
+                synonyms: ["astúcia", "estratagema", "manobra", "artimanha", "trama"],
+                antonyms: ["franqueza", "ingenuidade", "simplicidade", "transparência"],
+                etymology: "Do catalão oucastelhano antigo 'ardit', ligado à ideia de esperteza e sagacidade.",
+                example: "Com um ardil inteligente, a personagem escapou do cerco sem disparar um golpe."
+            },
+            {
+                word: "Assíduo",
+                syllables: "as·sí·duo",
+                pos: "adjetivo",
+                definition: "Constante, frequente e pontual; que comparece ou se dedica com regularidade.",
+                synonyms: ["frequente", "constante", "pontual", "perseverante", "contínuo"],
+                antonyms: ["ausente", "irregular", "esporádico", "faltoso"],
+                etymology: "Do latim 'assiduus' (que está sempre sentado junto ao trabalho, constante).",
+                example: "Era leitor assíduo das colunas dominicais de literatura e história."
+            },
+            {
+                word: "Austeridade",
+                syllables: "aus·te·ri·da·de",
+                pos: "substantivo feminino",
+                definition: "Severidade de costumes ou de princípios; simplicidade rigorosa, sobriedade e contenção.",
+                synonyms: ["sobriedade", "severidade", "rigor", "simplicidade", "contenção"],
+                antonyms: ["ostentação", "luxo", "leviandade", "extravagância"],
+                etymology: "Do latim 'austeritas', de 'austerus' (severo, rigoroso, seco).",
+                example: "A austeridade da arquitetura valorizava a luz natural e as linhas limpas."
+            },
+            {
+                word: "Bonança",
+                syllables: "bo·nan·ça",
+                pos: "substantivo feminino",
+                definition: "Tempo calmo e favorável no mar; figurativamente, tranquilidade, prosperidade e paz após agitação.",
+                synonyms: ["calmaria", "tranquilidade", "prosperidade", "paz", "serenidade"],
+                antonyms: ["tormenta", "tempestade", "crise", "agitação"],
+                etymology: "Do latim vulgar '*bonacia', derivado de 'bonus' (bom), aplicado originalmente ao mar calmo.",
+                example: "Depois de meses de mudanças difíceis, o estúdio finalmente entrou em bonança."
+            },
+            {
+                word: "Bucólico",
+                syllables: "bu·có·li·co",
+                pos: "adjetivo",
+                definition: "Relativo à vida campestre ou pastoril; tranquilo, natural e ligado ao campo.",
+                synonyms: ["pastoril", "campestre", "rural", "idílico", "agreste"],
+                antonyms: ["urbano", "citadino", "industrial", "metropolitano"],
+                etymology: "Do grego 'boukolikós', de 'boukólos' (boiadeiro, pastor).",
+                example: "O cenário bucólico do vale convidava a caminhadas lentas ao fim da tarde."
+            },
+            {
+                word: "Cabal",
+                syllables: "ca·bal",
+                pos: "adjetivo de dois gêneros",
+                definition: "Completo, exato, cabalmente cumprido ou suficiente; que não deixa margem a dúvidas.",
+                synonyms: ["completo", "exato", "cabal", "íntegro", "perfeito"],
+                antonyms: ["incompleto", "insuficiente", "deficiente", "parcial"],
+                etymology: "Do árabe 'qabala' (receber, aceitar, corresponder), com sentidos desenvolvidos no português antigo.",
+                example: "A demonstração matemática ofereceu uma prova cabal da hipótese."
+            },
+            {
+                word: "Celeridade",
+                syllables: "ce·le·ri·da·de",
+                pos: "substantivo feminino",
+                definition: "Rapidez, presteza e agilidade na execução de algo.",
+                synonyms: ["rapidez", "presteza", "agilidade", "velocidade", "prontidão"],
+                antonyms: ["lentidão", "demora", "morosidade", "vagar"],
+                etymology: "Do latim 'celeritas', derivado de 'celer' (rápido, veloz).",
+                example: "O pedido foi atendido com celeridade graças à digitalização do arquivo."
+            },
+            {
+                word: "Clemência",
+                syllables: "cle·mên·ci·a",
+                pos: "substantivo feminino",
+                definition: "Brandura no punir, misericórdia, indulgência e disposição para perdoar.",
+                synonyms: ["misericórdia", "indulgência", "brandura", "mansidão", "perdão"],
+                antonyms: ["crueldade", "severidade", "implacabilidade", "rigor"],
+                etymology: "Do latim 'clementia' (brandura, moderação, clemência).",
+                example: "Pediu clemência diante do atraso causado por um imprevisto na estrada."
+            },
+            {
+                word: "Coerência",
+                syllables: "co·e·rên·ci·a",
+                pos: "substantivo feminino",
+                definition: "Harmonia lógica entre ideias, atitudes ou partes de um todo; conformidade de princípios.",
+                synonyms: ["coesão", "consistência", "lógica", "harmonia", "nexo"],
+                antonyms: ["contradição", "incoerência", "incongruência", "disparate"],
+                etymology: "Do latim 'cohaerentia', de 'cohaerere' (estar ligado, manter-se unido).",
+                example: "A coerência entre o discurso e a prática reforçava a credibilidade do projeto."
+            },
+            {
+                word: "Conciso",
+                syllables: "con·ci·so",
+                pos: "adjetivo",
+                definition: "Que expressa muito em poucas palavras; breve, sintético e direto, sem prolixidade.",
+                synonyms: ["sucinto", "breve", "sintético", "lacônico", "direto"],
+                antonyms: ["prolixo", "extenso", "difuso", "verborrágico"],
+                etymology: "Do latim 'concisus' (cortado em volta, resumido), de 'concidere'.",
+                example: "O relatório era conciso e ia direto aos dados essenciais para a decisão."
+            },
+            {
+                word: "Confluência",
+                syllables: "con·flu·ên·ci·a",
+                pos: "substantivo feminino",
+                definition: "Ponto em que dois ou mais cursos de água se encontram; figurativamente, convergência de ideias ou caminhos.",
+                synonyms: ["convergência", "encontro", "junção", "união", "concordância"],
+                antonyms: ["divergência", "separação", "bifurcação", "dispersão"],
+                etymology: "Do latim 'confluentia', de 'confluere' (correr junto, reunir-se).",
+                example: "A cidade nasceu na confluência de dois rios navegáveis."
+            },
+            {
+                word: "Contundente",
+                syllables: "con·tun·den·te",
+                pos: "adjetivo de dois gêneros",
+                definition: "Que fere ou golpeia sem cortar; figurativamente, argumento decisivo, categórico ou irrefutável.",
+                synonyms: ["categórico", "irrefutável", "decisivo", "forte", "impactante"],
+                antonyms: ["fraco", "inconclusivo", "hesitante", "vago"],
+                etymology: "Do latim 'contundens', particípio de 'contundere' (golpear, pisar, esmagar).",
+                example: "Apresentou uma resposta contundente apoiada em evidências históricas."
+            },
+            {
+                word: "Cordialidade",
+                syllables: "cor·di·a·li·da·de",
+                pos: "substantivo feminino",
+                definition: "Qualidade do que é cordial; afetuosidade, amabilidade e calor humano no trato.",
+                synonyms: ["amabilidade", "afetuosidade", "gentileza", "cortesia", "simpatia"],
+                antonyms: ["frieza", "hostilidade", "rudeza", "indiferença"],
+                etymology: "Derivado de 'cordial', do latim 'cor, cordis' (coração).",
+                example: "A cordialidade na recepção tornou a visita ainda mais agradável."
+            },
+            {
+                word: "Crepúsculo",
+                syllables: "cre·pús·cu·lo",
+                pos: "substantivo masculino",
+                definition: "Claridade difusa entre o pôr do sol e a noite fechada, ou entre a madrugada e o nascer do sol.",
+                synonyms: ["entardecer", "ocaso", "poente", "alvorada", "penumbra"],
+                antonyms: ["meio-dia", "zênite", "clarão"],
+                etymology: "Do latim 'crepusculum' (penumbra, luz incerta do entardecer ou amanhecer).",
+                example: "No crepúsculo, as luzes da ponte começaram a se acender sobre a água."
+            },
+            {
+                word: "Dádiva",
+                syllables: "dá·di·va",
+                pos: "substantivo feminino",
+                definition: "Presente, oferta ou benefício recebido generosamente; dom ou graça.",
+                synonyms: ["presente", "dom", "oferta", "beneplácito", "graça"],
+                antonyms: ["cobrança", "ônus", "privação", "perda"],
+                etymology: "Do latim 'dativa' (coisa dada, oferta), ligado a 'dare' (dar).",
+                example: "Ter tempo livre para ler com calma parecia uma dádiva rara."
+            },
+            {
+                word: "Deleite",
+                syllables: "de·lei·te",
+                pos: "substantivo masculino",
+                definition: "Prazer intenso, satisfação refinada e gozo estético ou intelectual.",
+                synonyms: ["prazer", "deleitação", "satisfação", "gozo", "encanto"],
+                antonyms: ["desprazer", "tedio", "aborrecimento", "desgosto"],
+                etymology: "Do latim 'delectare' (atrair, encantar, dar prazer).",
+                example: "Folheava as gravuras antigas com visível deleite."
+            },
+            {
+                word: "Diáfano",
+                syllables: "di·á·fa·no",
+                pos: "adjetivo",
+                definition: "Que deixa passar a luz; transparente, translúcido ou delicado.",
+                synonyms: ["translúcido", "transparente", "diáfano", "etéreo", "claro"],
+                antonyms: ["opaco", "denso", "espesso", "sombrio"],
+                etymology: "Do grego 'diaphanés', formado por 'diá' (através) e 'phaínein' (mostrar, brilhar).",
+                example: "A cortina diáfana filtrava a luz da manhã sem escurecer o quarto."
+            },
+            {
+                word: "Diligência",
+                syllables: "di·li·gên·ci·a",
+                pos: "substantivo feminino",
+                definition: "Cuidado, zelo e presteza no cumprimento de um dever; também veículo antigo puxado por cavalos.",
+                synonyms: ["zelo", "cuidado", "empenho", "presteza", "esmero"],
+                antonyms: ["negligência", "desleixo", "descaso", "indolência"],
+                etymology: "Do latim 'diligentia', de 'diligere' (amar, escolher com apreço, cuidar).",
+                example: "Conduziu a investigação com diligência exemplar e atenção aos detalhes."
+            },
+            {
+                word: "Dissonância",
+                syllables: "dis·so·nân·ci·a",
+                pos: "substantivo feminino",
+                definition: "Falta de harmonia ou consonância entre sons, ideias ou opiniões.",
+                synonyms: ["desarmonia", "discordância", "divergência", "contraste", "ruído"],
+                antonyms: ["consonância", "harmonia", "acordo", "sintonia"],
+                etymology: "Do latim 'dissonantia', de 'dissonare' (soar de modo diferente ou desafinado).",
+                example: "Havia uma dissonância evidente entre as metas declaradas e o orçamento aprovado."
+            },
+            {
+                word: "Efervescência",
+                syllables: "e·fer·ves·cên·ci·a",
+                pos: "substantivo feminino",
+                definition: "Liberação de bolhas de gás em um líquido; figurativamente, agitação criativa, entusiasmo ou ebulição cultural.",
+                synonyms: ["ebulição", "entusiasmo", "agitação", "vivacidade", "fervor"],
+                antonyms: ["apatia", "estagnação", "inércia", "calmaria"],
+                etymology: "Do latim 'effervescentia', de 'effervescere' (ferver, borbulhar).",
+                example: "O bairro vivia uma efervescência cultural com ateliês, cafés e saraus."
+            },
+            {
+                word: "Egregio",
+                syllables: "e·gré·gio",
+                pos: "adjetivo",
+                definition: "Ilustre, notável, eminente e acima do comum por mérito ou saber.",
+                synonyms: ["ilustre", "eminente", "notável", "insigne", "exímio"],
+                antonyms: ["desconhecido", "medíocre", "obscuro", "comum"],
+                etymology: "Do latim 'egregius', literalmente 'escolhido fora do rebanho', de 'ex-' (fora) e 'grex' (rebanho).",
+                example: "A homenagem reuniu egressos e nomes egrégios da ciência nacional."
+            },
+            {
+                word: "Emblemático",
+                syllables: "em·ble·má·ti·co",
+                pos: "adjetivo",
+                definition: "Que funciona como símbolo ou representação marcante de uma época, ideia ou fenômeno.",
+                synonyms: ["simbólico", "representativo", "característico", "marcado", "icônico"],
+                antonyms: ["atípico", "anônimo", "irrelevante", "descaracterizado"],
+                etymology: "Derivado de 'emblema', do grego 'émblema' (peça encaixada, ornamento simbólico).",
+                example: "Aquele edifício tornou-se um marco emblemático da arquitetura moderna."
+            },
+            {
+                word: "Enigma",
+                syllables: "e·nig·ma",
+                pos: "substantivo masculino",
+                definition: "Aquilo que é difícil de compreender ou decifrar; mistério ou charada.",
+                synonyms: ["mistério", "charada", "arcano", "incógnita", "segredo"],
+                antonyms: ["evidência", "clareza", "solução", "transparência"],
+                etymology: "Do grego 'aínigma' (dito obscuro, enigma, charada).",
+                example: "A origem exata daquela inscrição rupestre continua sendo um enigma para os pesquisadores."
+            },
+            {
+                word: "Enlevo",
+                syllables: "en·le·vo",
+                pos: "substantivo masculino",
+                definition: "Estado de encantamento, admiração profunda ou arrebatamento espiritual.",
+                synonyms: ["encantamento", "arrebatamento", "êxtase", "fascínio", "admiração"],
+                antonyms: ["tedio", "desencanto", "aversão", "indiferença"],
+                etymology: "Derivado de 'enlevar' (encantar, arrebatar), do latim 'inlevare' (erguer, suspender).",
+                example: "O público ouviu o concerto em absoluto enlevo."
+            },
+            {
+                word: "Equânime",
+                syllables: "e·quâ·ni·me",
+                pos: "adjetivo de dois gêneros",
+                definition: "Que mantém equilíbrio emocional, imparcialidade e serenidade diante de situações favoráveis ou adversas.",
+                synonyms: ["imparcial", "sereno", "equilibrado", "justo", "calmo"],
+                antonyms: ["parcial", "impulsivo", "alterado", "injusto"],
+                etymology: "Do latim 'aequanimis', formado por 'aequus' (igual, justo) e 'animus' (ânimo).",
+                example: "A mediadora manteve uma postura equânime durante toda a negociação."
+            },
+            {
+                word: "Erudição",
+                syllables: "e·ru·di·ção",
+                pos: "substantivo feminino",
+                definition: "Sabedoria ampla e aprofundada adquirida por meio de leitura extensa e estudo sistemático.",
+                synonyms: ["cultura", "saber", "conhecimento", "doutidão", "sabedoria"],
+                antonyms: ["ignorância", "incultura", "leiguice", "desconhecimento"],
+                etymology: "Do latim 'eruditio', de 'erudire' (instruir, polir, tirar da rudeza).",
+                example: "Sua erudição era acompanhada pela simplicidade na hora de explicar conceitos difíceis."
+            },
+            {
+                word: "Esmero",
+                syllables: "es·me·ro",
+                pos: "substantivo masculino",
+                definition: "Cuidado minucioso, apuro, capricho e dedicação na execução de algo.",
+                synonyms: ["capricho", "apuro", "cuidado", "zelo", "perfeição"],
+                antonyms: ["desleixo", "descaso", "relaxamento", "improviso"],
+                etymology: "Do verbo 'esmerar', de origem controversa, ligado à ideia de limpar, purificar ou apurar.",
+                example: "Cada encadernação da oficina era feita com esmero artesanal."
+            },
+            {
+                word: "Estupefato",
+                syllables: "es·tu·pe·fa·to",
+                pos: "adjetivo",
+                definition: "Tomado de espanto, assombro ou perplexidade súbita diante de algo inesperado.",
+                synonyms: ["atônito", "perplexo", "assombrado", "estarrecido", "pasmado"],
+                antonyms: ["indiferente", "impassível", "calmo", "esperado"],
+                etymology: "Do latim 'stupefactus', de 'stupefacere' (deixar pasmo, aturdido).",
+                example: "Ficou estupefato ao descobrir que o manuscrito perdido estava naquela caixa."
+            },
+            {
+                word: "Etéreo",
+                syllables: "e·té·re·o",
+                pos: "adjetivo",
+                definition: "Relativo ao éter ou ao espaço superior; leve, sutil, delicado e quase impalpável.",
+                synonyms: ["sutil", "leve", "delicado", "celestial", "impalpável"],
+                antonyms: ["pesado", "denso", "terreno", "material"],
+                etymology: "Do latim 'aethereus', derivado do grego 'aithér' (ar puro e luminoso das alturas).",
+                example: "A névoa matinal dava um aspecto etéreo às copas das árvores."
+            },
+            {
+                word: "Exíguo",
+                syllables: "e·xí·guo",
+                pos: "adjetivo",
+                definition: "Muito pequeno, reduzido, escasso ou insuficiente em quantidade ou extensão.",
+                synonyms: ["escasso", "reduzido", "mínimo", "insuficiente", "pequeno"],
+                antonyms: ["abundante", "vasto", "copioso", "excessivo"],
+                etymology: "Do latim 'exiguus' (pequeno, escasso, estreito).",
+                example: "Com um orçamento exíguo, conseguiram realizar uma mostra criativa e bem cuidada."
+            },
+            {
+                word: "Exímio",
+                syllables: "e·xí·mi·o",
+                pos: "adjetivo",
+                definition: "Excelente, primoroso, notável e muito hábil em determinada arte ou atividade.",
+                synonyms: ["excelente", "primoroso", "excepcional", "notável", "hábil"],
+                antonyms: ["medíocre", "inapto", "incapaz", "deficiente"],
+                etymology: "Do latim 'eximius' (isento, escolhido, distinto, excelente).",
+                example: "Era um exímio violonista, conhecido pela precisão e sensibilidade."
+            },
+            {
+                word: "Fecundo",
+                syllables: "fe·cun·do",
+                pos: "adjetivo",
+                definition: "Fértil, produtivo; que gera abundância de frutos, ideias ou criações.",
+                synonyms: ["fértil", "produtivo", "criativo", "abundante", "frutífero"],
+                antonyms: ["estéril", "improdutivo", "árido", "infrutífero"],
+                etymology: "Do latim 'fecundus' (fértil, abundante, prolífico).",
+                example: "Aquele encontro marcou o início de uma parceria fecunda entre pesquisadores."
+            },
+            {
+                word: "Fidedigno",
+                syllables: "fi·de·dig·no",
+                pos: "adjetivo",
+                definition: "Digno de fé ou crédito; confiável, exato e verídico.",
+                synonyms: ["confiável", "fiel", "verídico", "seguro", "autêntico"],
+                antonyms: ["duvidoso", "falso", "inverídico", "enganoso"],
+                etymology: "Do latim 'fidedignus', formado por 'fides' (fé, confiança) e 'dignus' (digno).",
+                example: "O registro cartorial constitui uma fonte fidedigna para conferir as datas."
+            },
+            {
+                word: "Flagrante",
+                syllables: "fla·gran·te",
+                pos: "adjetivo de dois gêneros",
+                definition: "Evidente, manifesto, evidente no próprio ato; também pode significar ardente ou que queima.",
+                synonyms: ["evidente", "manifesto", "claro", "patente", "inegável"],
+                antonyms: ["oculto", "discreto", "incerto", "dissimulado"],
+                etymology: "Do latim 'flagrans, -antis' (que arde, que queima, que se faz sentir com força).",
+                example: "Havia uma contradição flagrante entre os dois depoimentos."
+            },
+            {
+                word: "Fluvial",
+                syllables: "flu·vi·al",
+                pos: "adjetivo de dois gêneros",
+                definition: "Relativo aos rios ou próprio deles.",
+                synonyms: ["ribeirinho", "potamológico", "aquático"],
+                antonyms: ["marinho", "oceânico", "terrestre"],
+                etymology: "Do latim 'fluvialis', derivado de 'fluvius' (rio).",
+                example: "O transporte fluvial conectava as comunidades ao longo da bacia."
+            },
+            {
+                word: "Fortuito",
+                syllables: "for·tui·to",
+                pos: "adjetivo",
+                definition: "Casual, acidental, imprevisto; que ocorre por acaso, sem intenção prévia.",
+                synonyms: ["acidental", "casual", "imprevisto", "inesperado", "eventual"],
+                antonyms: ["planejado", "intencional", "premeditado", "proposital"],
+                etymology: "Do latim 'fortuitus', de 'fors, fortis' (acaso, sorte).",
+                example: "O encontro fortuito na estação mudou os planos daquela tarde."
+            },
+            {
+                word: "Frágil",
+                syllables: "frá·gil",
+                pos: "adjetivo de dois gêneros",
+                definition: "Que se quebra ou se altera com facilidade; delicado, tênue ou pouco resistente.",
+                synonyms: ["delicado", "quebradiço", "tênue", "vulnerável", "frágil"],
+                antonyms: ["resistente", "robusto", "forte", "durável"],
+                etymology: "Do latim 'fragilis' (quebradiço, frágil), de 'frangere' (quebrar).",
+                example: "A porcelana antiga exigia manuseio cuidadoso por ser extremamente frágil."
+            },
+            {
+                word: "Frugality",
+                syllables: "fru·ga·li·da·de",
+                pos: "substantivo feminino",
+                definition: "Moderação nos gastos e no consumo; simplicidade, economia e sobriedade.",
+                synonyms: ["sobriedade", "economia", "moderação", "simplicidade", "parcimoniosidade"],
+                antonyms: ["esbanjamento", "extravagância", "luxo", "gastança"],
+                etymology: "Do latim 'frugalitas', derivado de 'frugalis' (econômico, moderado, proveitoso).",
+                example: "A frugalidade no dia a dia permitiu formar uma reserva com tranquilidade."
+            },
+            {
+                word: "Fugaz",
+                syllables: "fu·gaz",
+                pos: "adjetivo de dois gêneros",
+                definition: "Que passa rapidamente; efêmero, transitório e difícil de reter.",
+                synonyms: ["efêmero", "passageiro", "veloz", "rápido", "transitório"],
+                antonyms: ["duradouro", "permanente", "lento", "eterno"],
+                etymology: "Do latim 'fugax, -acis' (que foge depressa, passageiro).",
+                example: "A sombra da nuvem cruzou o campo de forma fugaz."
+            },
+            {
+                word: "Genialidade",
+                syllables: "ge·ni·a·li·da·de",
+                pos: "substantivo feminino",
+                definition: "Qualidade do que é genial; criatividade extraordinária, inventividade e brilhantismo.",
+                synonyms: ["brilhantismo", "criatividade", "inventividade", "engenho", "talento"],
+                antonyms: ["banalidade", "mediocridade", "vulgaridade"],
+                etymology: "Derivado de 'genial', do latim 'genialis' (relativo ao gênio ou espírito criador).",
+                example: "A solução simples para o impasse revelou a genialidade da equipe."
+            },
+            {
+                word: "Gratidão",
+                syllables: "gra·ti·dão",
+                pos: "substantivo feminino",
+                definition: "Reconhecimento afetuoso por um benefício, ajuda ou gesto recebido.",
+                synonyms: ["reconhecimento", "agradecimento", "gratitude", "apreço"],
+                antonyms: ["ingratidão", "desconsideração", "esquecimento"],
+                etymology: "Do latim 'gratitudo', derivado de 'gratus' (agradecido, grato).",
+                example: "Expressou sua gratidão a todos que colaboraram na publicação do livro."
+            },
+            {
+                word: "Harmonia",
+                syllables: "har·mo·ni·a",
+                pos: "substantivo feminino",
+                definition: "Combinação agradável de sons simultâneos; por extensão, equilíbrio, paz e concordância entre partes.",
+                synonyms: ["equilíbrio", "concórdia", "sintonia", "paz", "proporção"],
+                antonyms: ["discórdia", "desarmonia", "conflito", "caos"],
+                etymology: "Do grego 'harmonía' (ajuste, encaixe, acordo, consonância).",
+                example: "As cores do jardim criavam uma harmonia visual serena."
+            },
+            {
+                word: "Hesitar",
+                syllables: "he·si·tar",
+                pos: "verbo intransitivo",
+                definition: "Ficar em dúvida ou indeciso antes de agir ou falar; vacilar.",
+                synonyms: ["vacilar", "duvidar", "titubear", "relutar", "hesitar"],
+                antonyms: ["decidir", "resolver", "determinar", "avançar"],
+                etymology: "Do latim 'haesitare' (ficar preso, emperrar, vacilar).",
+                example: "Não hesitou em estender a mão quando percebeu a dificuldade do colega."
+            },
+            {
+                word: "Hospitalidade",
+                syllables: "hos·pi·ta·li·da·de",
+                pos: "substantivo feminino",
+                definition: "Qualidade de quem acolhe bem os hóspedes e visitantes; generosidade ao receber.",
+                synonyms: ["acolhimento", "receptividade", "gentileza", "afabilidade", "agasalho"],
+                antonyms: ["inospitalidade", "hostilidade", "frieza", "rejeição"],
+                etymology: "Do latim 'hospitalitas', derivado de 'hospitalis' (hospitaleiro).",
+                example: "A hospitalidade daquela região tornava qualquer viajante à vontade."
+            },
+            {
+                word: "Idoneidade",
+                syllables: "i·do·nei·da·de",
+                pos: "substantivo feminino",
+                definition: "Qualidade do que é idôneo; retidão moral, honestidade ou capacidade adequada para um encargo.",
+                synonyms: ["honestidade", "retidão", "probidade", "aptidão", "integridade"],
+                antonyms: ["inidoneidade", "desonestidade", "inaptidão"],
+                etymology: "Do latim 'idoneitas', de 'idoneus' (apto, próprio, conveniente).",
+                example: "A idoneidade profissional do perito foi reconhecida por ambas as partes."
+            },
+            {
+                word: "Iminente",
+                syllables: "i·mi·nen·te",
+                pos: "adjetivo de dois gêneros",
+                definition: "Que está prestes a acontecer ou ocorrer em breve; iminente, próximo.",
+                synonyms: ["iminente", "próximo", "iminente", "prestes", "iminente"],
+                antonyms: ["distante", "remoto", "improvável", "tardio"],
+                etymology: "Do latim 'imminens, -entis' (que pende sobre, que está próximo de suceder).",
+                example: "As nuvens escuras anunciavam a chegada iminente da chuva."
+            },
+            {
+                word: "Imparcial",
+                syllables: "im·par·ci·al",
+                pos: "adjetivo de dois gêneros",
+                definition: "Que não toma partido nem se deixa influenciar por preferências pessoais; justo e neutro.",
+                synonyms: ["neutro", "justo", "equânime", "isento", "objetivo"],
+                antonyms: ["parcial", "tendencioso", "enviesado", "partidário"],
+                etymology: "Formado pelo prefixo 'im-' (negação) e 'parcial' (que toma parte).",
+                example: "Uma análise imparcial exige ouvir diferentes perspectivas antes de concluir."
+            },
+            {
+                word: "Impassível",
+                syllables: "im·pas·sí·vel",
+                pos: "adjetivo de dois gêneros",
+                definition: "Que não demonstra emoção, dor ou perturbação; impassível, calmo ou insensível.",
+                synonyms: ["imperturbável", "sereno", "calmo", "estoico", "indiferente"],
+                antonyms: ["emotivo", "sensível", "comovido", "alterado"],
+                etymology: "Do latim 'impassibilis' (incapaz de sofrer ou sentir paixão).",
+                example: "Permaneceu impassível mesmo sob forte pressão durante a entrevista."
+            },
+            {
+                word: "Incansável",
+                syllables: "in·can·sá·vel",
+                pos: "adjetivo de dois gêneros",
+                definition: "Que não se cansa; persistente, incansável e tenaz no trabalho ou em uma causa.",
+                synonyms: ["persistente", "tenaz", "perseverante", "infatigável", "dedicado"],
+                antonyms: ["cansado", "desanimado", "indolente", "apático"],
+                etymology: "Formado pelo prefixo 'in-' e 'cansável' (capaz de se cansar).",
+                example: "Foi um defensor incansável da preservação das áreas verdes urbanas."
+            },
+            {
+                word: "Incipiente",
+                syllables: "in·ci·pi·en·te",
+                pos: "adjetivo de dois gêneros",
+                definition: "Que está no início; principiante, embrionário ou incipiente.",
+                synonyms: ["inicial", "embrionário", "incipiente", "nascente", "preliminar"],
+                antonyms: ["avançado", "maduro", "consolidado", "concluído"],
+                etymology: "Do latim 'incipiens, -entis', particípio de 'incipere' (começar, empreender).",
+                example: "O projeto ainda era incipiente, mas já mostrava potencial promissor."
+            },
+            {
+                word: "Inclinação",
+                syllables: "in·cli·na·ção",
+                pos: "substantivo feminino",
+                definition: "Ato ou efeito de inclinar; pendência, tendência natural, aptidão ou afeição.",
+                synonyms: ["tendência", "aptidão", "propensão", "pendor", "afeição"],
+                antonyms: ["aversão", "repulsa", "desinteresse", "retidão"],
+                etymology: "Do latim 'inclinatio', de 'inclinare' (inclinar, curvar, tender para).",
+                example: "Demonstrava desde cedo uma inclinação natural para o desenho e a geometria."
+            },
+            {
+                word: "Indagação",
+                syllables: "in·da·ga·ção",
+                pos: "substantivo feminino",
+                definition: "Ato de indagar; pergunta, pesquisa, investigação ou busca de esclarecimento.",
+                synonyms: ["investigação", "pesquisa", "pergunta", "inquirição", "consulta"],
+                antonyms: ["afirmação", "resposta", "certeza", "desinteresse"],
+                etymology: "Do latim 'indagatio', de 'indagare' (rastrear, investigar, procurar).",
+                example: "A indagação levou a novas leituras sobre a história local."
+            },
+            {
+                word: "Indulgente",
+                syllables: "in·dul·gen·te",
+                pos: "adjetivo de dois gêneros",
+                definition: "Que perdoa com facilidade; condescendente, tolerante e compreensivo com falhas alheias.",
+                synonyms: ["tolerante", "compreensivo", "condescendente", "clemente", "benigno"],
+                antonyms: ["intolerante", "severo", "rígido", "implacável"],
+                etymology: "Do latim 'indulgens, -entis' (que cede, que é bondoso ou indulgente).",
+                example: "Costumava ser indulgente com os erros de quem estava começando."
+            },
+            {
+                word: "Inédito",
+                syllables: "i·né·di·to",
+                pos: "adjetivo",
+                definition: "Que ainda não foi publicado, divulgado ou realizado; novo e sem precedente conhecido.",
+                synonyms: ["novo", "inédito", "original", "virgem", "desconhecido"],
+                antonyms: ["publicado", "conhecido", "repetido", "habitual"],
+                etymology: "Do latim 'ineditus', de 'in-' (não) e 'editus' (editado, dado à luz).",
+                example: "O acervo revelou cartas inéditas escritas no início do século passado."
+            },
+            {
+                word: "Inerente",
+                syllables: "i·ne·ren·te",
+                pos: "adjetivo de dois gêneros",
+                definition: "Que está inseparavelmente ligado à natureza ou essência de algo.",
+                synonyms: ["intrínseco", "inerente", "essencial", "próprio", "peculiar"],
+                antonyms: ["extrínseco", "alheio", "acessório", "externo"],
+                etymology: "Do latim 'inhaerens, -entis' (que está aderido a, inseparável).",
+                example: "Algum grau de incerteza é inerente a qualquer previsão de longo prazo."
+            },
+            {
+                word: "Infindável",
+                syllables: "in·fin·dá·vel",
+                pos: "adjetivo de dois gêneros",
+                definition: "Que não tem fim ou parece não terminar; interminável, vasto.",
+                synonyms: ["interminável", "infinito", "longo", "infindo", "contínuo"],
+                antonyms: ["breve", "finito", "curto", "limitado"],
+                etymology: "Formado pelo prefixo 'in-' e 'findável' (que pode findar, terminar).",
+                example: "A estrada parecia infindável sob o sol aberto do planalto."
+            },
+            {
+                word: "Ingênuo",
+                syllables: "in·gê·nu·o",
+                pos: "adjetivo",
+                definition: "Simples, franco, sem malícia; originalmente, nascido livre (não escravo).",
+                synonyms: ["simples", "franco", "cândido", "inocente", "natural"],
+                antonyms: ["malicioso", "astuto", "dissimulado", "artificioso"],
+                etymology: "Do latim 'ingenuus' (nascido livre, nobre, franco).",
+                example: "A pergunta ingênua acabou revelando um detalhe que ninguém havia notado."
+            },
+            {
+                word: "Inovação",
+                syllables: "i·no·va·ção",
+                pos: "substantivo feminino",
+                definition: "Ato ou efeito de inovar; introdução de novidade, método ou solução útil.",
+                synonyms: ["novidade", "renovação", "criação", "modernização", "avanço"],
+                antonyms: ["rotina", "estagnação", "retrocesso", "conservadorismo"],
+                etymology: "Do latim 'innovatio', de 'innovare' (renovar, alterar para novo).",
+                example: "A inovação no processo reduziu o desperdício sem perder qualidade."
+            },
+            {
+                word: "Insólito",
+                syllables: "in·só·li·to",
+                pos: "adjetivo",
+                definition: "Incomum, estranho, não habitual ou fora do comum.",
+                synonyms: ["incomum", "estranho", "inusitado", "singular", "raro"],
+                antonyms: ["comum", "habitual", "usual", "ordinário"],
+                etymology: "Do latim 'insolitus' (não acostumado, raro, incomum).",
+                example: "Foi um fenômeno insólito ver neve fina cobrindo a encosta."
+            },
+            {
+                word: "Íntegro",
+                syllables: "ín·te·gro",
+                pos: "adjetivo",
+                definition: "Inteiro, intacto; figurativamente, honesto, reto e fiel aos próprios princípios.",
+                synonyms: ["íntegro", "honesto", "reto", "completo", "íntegro"],
+                antonyms: ["corrupto", "desonesto", "incompleto", "falho"],
+                etymology: "Do latim 'integer' (intacto, inteiro, não tocado).",
+                example: "Manteve uma conduta íntegra ao longo de toda a vida pública."
+            },
+            {
+                word: "Intrepidez",
+                syllables: "in·tre·pi·dez",
+                pos: "substantivo feminino",
+                definition: "Coragem destemida diante do perigo; ousadia firme e decidida.",
+                synonyms: ["coragem", "ousadia", "bravura", "audácia", "destemor"],
+                antonyms: ["covardia", "medo", "timidez", "temor"],
+                etymology: "Derivado de 'intrépido', do latim 'intrepidus' (que não treme, destemido).",
+                example: "A intrepidez da equipe de resgate salvou os excursionistas."
+            },
+            {
+                word: "Intrínseco",
+                syllables: "in·trín·se·co",
+                pos: "adjetivo",
+                definition: "Que pertence à essência ou natureza própria de algo; interior, íntimo.",
+                synonyms: ["inerente", "essencial", "íntimo", "interno", "próprio"],
+                antonyms: ["extrínseco", "externo", "acidental", "alheio"],
+                etymology: "Do latim 'intrinsecus' (por dentro, interiormente).",
+                example: "O valor intrínseco da obra independe de modismos passageiros."
+            },
+            {
+                word: "Jovial",
+                syllables: "jo·vi·al",
+                pos: "adjetivo de dois gêneros",
+                definition: "Alegre, animado, jovial, de bom humor e espírito comunicativo.",
+                synonyms: ["alegre", "animado", "jovial", "festivo", "bem-humorado"],
+                antonyms: ["triste", "melancólico", "sombrio", "abatido"],
+                etymology: "Do latim 'iovialis' (relativo a Júpiter, considerado astro de bom augúrio e alegria).",
+                example: "Com seu temperamento jovial, animava qualquer reunião de família."
+            },
+            {
+                word: "Júbilo",
+                syllables: "jú·bi·lo",
+                pos: "substantivo masculino",
+                definition: "Alegria viva e manifesta; contentamento intenso, regozijo.",
+                synonyms: ["alegria", "regozijo", "contentamento", "euforia", "gáudio"],
+                antonyms: ["tristeza", "pesar", "desânimo", "luto"],
+                etymology: "Do latim 'iubilum' (grito de alegria dos pastores ou camponeses).",
+                example: "A notícia do retorno foi recebida com júbilo por todos."
+            },
+            {
+                word: "Lacônico",
+                syllables: "la·cô·ni·co",
+                pos: "adjetivo",
+                definition: "Que fala ou escreve de modo muito breve e conciso; econômico nas palavras.",
+                synonyms: ["conciso", "sucinto", "breve", "reservado", "sobrio"],
+                antonyms: ["prolixo", "loquaz", "verborrágico", "extenso"],
+                etymology: "Do grego 'Lakonikós', relativo à Lacônia (Esparta), famosa pela fala curta e direta.",
+                example: "Sua resposta foi lacônica: apenas um aceno de cabeça e um sorriso."
+            },
+            {
+                word: "Legado",
+                syllables: "le·ga·do",
+                pos: "substantivo masculino",
+                definition: "Aquilo que se deixa ou transmite às gerações seguintes; herança cultural, moral ou material.",
+                synonyms: ["herança", "legado", "contribuição", "patrimônio", "marca"],
+                antonyms: ["esquecimento", "perda", "apagamento"],
+                etymology: "Do latim 'legatum' (coisa deixada em testamento), de 'legare' (deixar, transmitir).",
+                example: "O legado de ensino e pesquisa permanece vivo na universidade."
+            },
+            {
+                word: "Lealdade",
+                syllables: "le·al·da·de",
+                pos: "substantivo feminino",
+                definition: "Fidelidade aos compromissos, às pessoas e aos princípios assumidos; franqueza.",
+                synonyms: ["fidelidade", "lealdade", "honradez", "constância", "franqueza"],
+                antonyms: ["deslealdade", "traição", "infidelidade", "falsidade"],
+                etymology: "Derivado de 'leal', do latim 'legalis' (conforme a lei, fiel).",
+                example: "A lealdade entre os amigos resistiu ao tempo e à distância."
+            },
+            {
+                word: "Lúcido",
+                syllables: "lú·ci·do",
+                pos: "adjetivo",
+                definition: "Claro, lúcido, dotado de razão clara e discernimento; luminoso.",
+                synonyms: ["claro", "racional", "sensato", "cônscio", "luminoso"],
+                antonyms: ["confuso", "turvo", "obnubilado", "desorientado"],
+                etymology: "Do latim 'lucidus' (cheio de luz, brilhante, claro).",
+                example: "Ofereceu uma análise lúcida dos cenários possíveis."
+            },
+            {
+                word: "Moderação",
+                syllables: "mo·de·ra·ção",
+                pos: "substantivo feminino",
+                definition: "Qualidade de quem evita excessos; comedimento, temperança e equilíbrio.",
+                synonyms: ["temperança", "comedimento", "equilíbrio", "prudência", "sobriedade"],
+                antonyms: ["excesso", "descomedimento", "impulsividade", "extremismo"],
+                etymology: "Do latim 'moderatio', de 'moderari' (conter, regular, medir).",
+                example: "A moderação no ritmo de trabalho ajudou a evitar o esgotamento."
+            },
+            {
+                word: "Munificência",
+                syllables: "mu·ni·fi·cên·ci·a",
+                pos: "substantivo feminino",
+                definition: "Generosidade ampla e magnânima; liberalidade em dar ou repartir.",
+                synonyms: ["generosidade", "liberalidade", "magnanimidade", "largueza"],
+                antonyms: ["avareza", "mesquinharia", "mão-fechada"],
+                etymology: "Do latim 'munificentia', de 'munificus' (generoso, que faz presentes).",
+                example: "A munificência dos mecenas viabilizou a restauração do acervo."
+            },
+            {
+                word: "Nítido",
+                syllables: "ní·ti·do",
+                pos: "adjetivo",
+                definition: "Claro, bem definido, sem borrões nem confusão; evidente.",
+                synonyms: ["claro", "definido", "límpido", "evidente", "preciso"],
+                antonyms: ["borrado", "difuso", "confuso", "obscuro"],
+                etymology: "Do latim 'nitidus' (brilhante, claro, bem tratado).",
+                example: "A fotografia mostrava com nitidez os detalhes da fachada."
+            },
+            {
+                word: "Nostalgia",
+                syllables: "nos·tal·gi·a",
+                pos: "substantivo feminino",
+                definition: "Saudade suave ou melancolia ligada a tempos passados ou lugares distantes.",
+                synonyms: ["saudade", "melancolia", "lembrança", "evocação"],
+                antonyms: ["indiferença", "desapego"],
+                etymology: "Do grego 'nóstos' (regresso, volta ao lar) e 'álgos' (dor, pesar).",
+                example: "Aquele aroma de chuva na terra trouxe uma nostalgia acolhedora."
+            },
+            {
+                word: "Obsequioso",
+                syllables: "ob·se·qui·o·so",
+                pos: "adjetivo",
+                definition: "Atencioso, solícito, disposto a agradar e servir com gentileza.",
+                synonyms: ["solícito", "atencioso", "prestável", "gentil", "cortês"],
+                antonyms: ["desatencioso", "grosseiro", "indiferente"],
+                etymology: "Derivado de 'obséquio', do latim 'obsequium' (condescendência, obediência, cortesia).",
+                example: "O livreiro foi obsequioso e separou várias edições comentadas."
+            },
+            {
+                word: "Ostentação",
+                syllables: "os·ten·ta·ção",
+                pos: "substantivo feminino",
+                definition: "Ato de exibir com pompa, vaidade ou luxo para chamar atenção.",
+                synonyms: ["exibição", "pompa", "vaidade", "alarde", "luxo"],
+                antonyms: ["simplicidade", "modéstia", "sobriedade", "discrição"],
+                etymology: "Do latim 'ostentatio', de 'ostentare' (mostrar com frequência, exibir).",
+                example: "Preferia uma vida simples, longe de qualquer ostentação."
+            },
+            {
+                word: "Parcimônia",
+                syllables: "par·ci·mô·ni·a",
+                pos: "substantivo feminino",
+                definition: "Economia cuidadosa, comedimento e prudência no uso de recursos ou palavras.",
+                synonyms: ["economia", "comedimento", "prudência", "moderação", "sobriedade"],
+                antonyms: ["desperdício", "esbanjamento", "excesso"],
+                etymology: "Do latim 'parcimonia', de 'parcere' (poupar, economizar).",
+                example: "Utilizou os recursos disponíveis com parcimônia durante toda a etapa."
+            },
+            {
+                word: "Perene",
+                syllables: "pe·re·ne",
+                pos: "adjetivo de dois gêneros",
+                definition: "Contínuo, duradouro, que não se esgota ou não murcha com as estações.",
+                synonyms: ["duradouro", "contínuo", "perpétuo", "eterno", "constante"],
+                antonyms: ["efêmero", "passageiro", "transitório", "caduco"],
+                etymology: "Do latim 'perennis' (que dura o ano inteiro, contínuo).",
+                example: "O interesse pela boa leitura mantém-se perene ao longo das gerações."
+            },
+            {
+                word: "Perspicaz",
+                syllables: "per·spi·caz",
+                pos: "adjetivo de dois gêneros",
+                definition: "Que possui percepção aguda, argúcia e facilidade para compreender o que é sutil.",
+                synonyms: ["sagaz", "arguto", "astuto", "perspicaz", "agudo"],
+                antonyms: ["desatento", "obtuso", "ingênuo"],
+                etymology: "Do latim 'perspicax, -acis' (que vê através, penetrante).",
+                example: "Com comentário perspicaz, apontou o ponto central da questão."
+            },
+            {
+                word: "Plausível",
+                syllables: "plau·sí·vel",
+                pos: "adjetivo de dois gêneros",
+                definition: "Que merece aprovação ou parece razoável e aceitável.",
+                synonyms: ["razoável", "aceitável", "plausível", "verossímil", "admissível"],
+                antonyms: ["absurdo", "inaceitável", "implausível", "descabido"],
+                etymology: "Do latim 'plausibilis' (digno de aplauso, aceitável).",
+                example: "A explicação apresentada parecia plausível diante dos dados reunidos."
+            },
+            {
+                word: "Ponderar",
+                syllables: "pon·de·rar",
+                pos: "verbo transitivo",
+                definition: "Avaliar com cuidado, refletir maduramente sobre prós e contras antes de decidir.",
+                synonyms: ["refletir", "avaliar", "considerar", "meditar", "pesar"],
+                antonyms: ["precipitar-se", "ignorar", "desprezar"],
+                etymology: "Do latim 'ponderare' (pesar na balança, avaliar, meditar).",
+                example: "É prudente ponderar todas as consequências antes de assinar o acordo."
+            },
+            {
+                word: "Pragmático",
+                syllables: "prag·má·ti·co",
+                pos: "adjetivo",
+                definition: "Orientado para resultados práticos e concretos, em vez de teorias abstratas.",
+                synonyms: ["prático", "objetivo", "realista", "funcional", "utilitário"],
+                antonyms: ["idealista", "teórico", "utópico", "abstrato"],
+                etymology: "Do grego 'pragmatikós' (relativo à ação ou aos negócios práticos).",
+                example: "Adotou uma abordagem pragmática para resolver o gargalo operacional."
+            },
+            {
+                word: "Presteza",
+                syllables: "pres·te·za",
+                pos: "substantivo feminino",
+                definition: "Rapidez, prontidão e agilidade ao atender ou realizar algo.",
+                synonyms: ["rapidez", "prontidão", "agilidade", "celeridade", "desenvoltura"],
+                antonyms: ["lentidão", "demora", "morosidade"],
+                etymology: "Derivado de 'presto' (rápido, pronto), do latim 'praestus'.",
+                example: "Agradeceu a presteza com que responderam ao pedido de auxílio."
+            },
+            {
+                word: "Probidade",
+                syllables: "pro·bi·da·de",
+                pos: "substantivo feminino",
+                definition: "Honestidade estrita, integridade moral e retidão de caráter.",
+                synonyms: ["honestidade", "integridade", "retidão", "idoneidade", "honradez"],
+                antonyms: ["improbidade", "desonestidade", "corrupção"],
+                etymology: "Do latim 'probitas', derivado de 'probus' (bom, reto, honesto).",
+                example: "Sua probidade administrativa era reconhecida por todos."
+            },
+            {
+                word: "Prolixo",
+                syllables: "pro·li·xo",
+                pos: "adjetivo",
+                definition: "Excessivamente longo, difuso ou demorado no falar ou escrever.",
+                synonyms: ["extenso", "difuso", "demorado", "longo", "verborrágico"],
+                antonyms: ["conciso", "sucinto", "breve", "sintético"],
+                etymology: "Do latim 'prolixus' (estendido para a frente, comprido, contínuo).",
+                example: "O texto era prolixo e precisava de edição para ganhar clareza."
+            },
+            {
+                word: "Prudência",
+                syllables: "pru·dên·ci·a",
+                pos: "substantivo feminino",
+                definition: "Cautela, sensatez e sabedoria prática para evitar riscos desnecessários.",
+                synonyms: ["cautela", "sensatez", "precaução", "discernimento", "moderação"],
+                antonyms: ["imprudência", "temeridade", "precipitação", "descaso"],
+                etymology: "Do latim 'prudentia', contração de 'providentia' (previsão, discernimento).",
+                example: "A prudência aconselhava testar a mudança em pequena escala primeiro."
+            },
+            {
+                word: "Pusilânime",
+                syllables: "pu·si·lâ·ni·me",
+                pos: "adjetivo de dois gêneros",
+                definition: "Faltoso de ânimo ou coragem; tímido em excesso, medroso ou acanhado.",
+                synonyms: ["medroso", "tímido", "covarde", "acanhado", "temeroso"],
+                antonyms: ["magnânimo", "corajoso", "ousado", "intrépido"],
+                etymology: "Do latim 'pusillanimis', de 'pusillus' (muito pequeno) e 'animus' (ânimo, alma).",
+                example: "Não se deixou levar por atitudes pusilânimes diante do desafio."
+            },
+            {
+                word: "Reciproco",
+                syllables: "re·cí·pro·co",
+                pos: "adjetivo",
+                definition: "Mútuo; que se dá e se recebe em igual correspondência entre duas partes.",
+                synonyms: ["mútuo", "correspondente", "bilateral", "recíproco"],
+                antonyms: ["unilateral", "assimétrico", "não correspondido"],
+                etymology: "Do latim 'reciprocus' (que vai e volta, mútuo).",
+                example: "A confiança entre os parceiros era recíproca e antiga."
+            },
+            {
+                word: "Redimir",
+                syllables: "re·di·mir",
+                pos: "verbo transitivo",
+                definition: "Resgatar, salvar ou compensar; reparar uma falta ou reabilitar.",
+                synonyms: ["resgatar", "reparar", "compensar", "salvar", "reabilitar"],
+                antonyms: ["condenar", "agravar", "perder"],
+                etymology: "Do latim 'redimere' (comprar de volta, resgatar).",
+                example: "O segundo tempo inspiradíssimo serviu para redimir a atuação inicial."
+            },
+            {
+                word: "Refulgente",
+                syllables: "re·ful·gen·te",
+                pos: "adjetivo de dois gêneros",
+                definition: "Que brilha intensamente; resplandecente, radiante.",
+                synonyms: ["resplandecente", "radiante", "brilhante", "fulgurante", "luminoso"],
+                antonyms: ["opaco", "apagado", "sombrio", "fosco"],
+                etymology: "Do latim 'refulgens, -entis', de 'refulgere' (brilhar intensamente).",
+                example: "O mar parecia refulgente sob o sol forte do meio-dia."
+            },
+            {
+                word: "Reminiscência",
+                syllables: "re·mi·nis·cên·ci·a",
+                pos: "substantivo feminino",
+                definition: "Lembrança vaga, fragmentária ou evocação de algo passado.",
+                synonyms: ["lembrança", "recordação", "evocação", "memória"],
+                antonyms: ["esquecimento", "omissão"],
+                etymology: "Do latim 'reminiscentia', de 'reminisci' (lembrar-se, trazer à memória).",
+                example: "Aquele som trouxe uma reminiscência distante dos verões na infância."
+            },
+            {
+                word: "Sagacidade",
+                syllables: "sa·ga·ci·da·de",
+                pos: "substantivo feminino",
+                definition: "Astúcia fina, perspicácia e rapidez de percepção.",
+                synonyms: ["perspicácia", "astúcia", "argúcia", "esperteza", "agudeza"],
+                antonyms: ["ingenuidade", "lerdesa", "falta de jeito"],
+                etymology: "Derivado de 'sagaz', do latim 'sagax, -acis' (de faro aguçado, perspicaz).",
+                example: "Resolveu o enigma com sagacidade e calma."
+            },
+            {
+                word: "Sanar",
+                syllables: "sa·nar",
+                pos: "verbo transitivo",
+                definition: "Curar, sarar ou remediar; resolver uma falha ou pendência.",
+                synonyms: ["curar", "sanar", "remediar", "resolver", "corrigir"],
+                antonyms: ["agravar", "piorar", "ferir"],
+                etymology: "Do latim 'sanare' (curar, tornar são), de 'sanus' (são, saudável).",
+                example: "As novas medidas ajudaram a sanar as inconsistências do cadastro."
+            },
+            {
+                word: "Semblante",
+                syllables: "sem·blan·te",
+                pos: "substantivo masculino",
+                definition: "Expressão do rosto ou fisionomia, que costuma refletir um estado de espírito.",
+                synonyms: ["fisionomia", "rosto", "expressão", "semblante", "aspecto"],
+                antonyms: ["ocultação", "disfarce"],
+                etymology: "Do francês antigo 'semblant' (aparência, semelhança).",
+                example: "Seu semblante sereno transmitia segurança a todos ao redor."
+            },
+            {
+                word: "Serenidade",
+                syllables: "se·re·ni·da·de",
+                pos: "substantivo feminino",
+                definition: "Calma, tranquilidade de espírito e claridade isenta de tempestades.",
+                synonyms: ["calma", "tranquilidade", "paz", "placidez", "sossego"],
+                antonyms: ["ansiedade", "agitação", "tumulto", "inquietude"],
+                etymology: "Do latim 'serenitas', de 'serenus' (claro, sem nuvens, calmo).",
+                example: "A serenidade da manhã tornava o estudo mais produtivo."
+            },
+            {
+                word: "Simbiose",
+                syllables: "sim·bi·o·se",
+                pos: "substantivo feminino",
+                definition: "Associação íntima e duradoura entre organismos; por extensão, relação de convivência ou troca mútua.",
+                synonyms: ["convivência", "interdependência", "união", "parceria"],
+                antonyms: ["isolamento", "separação", "antagonismo"],
+                etymology: "Do grego 'symbíosis' (vida em comum, convivência).",
+                example: "A livraria e o café funcionavam em perfeita simbiose no mesmo espaço."
+            },
+            {
+                word: "Sobriedade",
+                syllables: "so·bri·e·da·de",
+                pos: "substantivo feminino",
+                definition: "Moderação, simplicidade e equilíbrio; ausência de excessos ou exageros.",
+                synonyms: ["moderação", "simplicidade", "austeridade", "equilíbrio", "contenção"],
+                antonyms: ["excesso", "extravagância", "ostentação"],
+                etymology: "Do latim 'sobrietas', de 'sobrius' (sóbrio, moderado).",
+                example: "A sobriedade da apresentação valorizou o conteúdo principal."
+            },
+            {
+                word: "Solícito",
+                syllables: "so·lí·ci·to",
+                pos: "adjetivo",
+                definition: "Atencioso, prestativo, cuidadoso e pronto a ajudar.",
+                synonyms: ["prestativo", "atencioso", "solícito", "cuidadoso", "zeloso"],
+                antonyms: ["negligente", "indiferente", "desatencioso"],
+                etymology: "Do latim 'sollicitus' (cuidadoso, inquieto com o bem de outrem, solícito).",
+                example: "Sempre foi solícito ao orientar quem chegava pela primeira vez."
+            },
+            {
+                word: "Suntuoso",
+                syllables: "sun·tu·o·so",
+                pos: "adjetivo",
+                definition: "Magnífico, luxuoso, grandioso e de grande pompa.",
+                synonyms: ["luxuoso", "magnífico", "esplêndido", "suntuoso", "pomposo"],
+                antonyms: ["simples", "modesto", "humilde", "austero"],
+                etymology: "Do latim 'sumptuosus' (custoso, luxuoso, magnífico).",
+                example: "O salão histórico exibía um teto suntuoso com pinturas clássicas."
+            },
+            {
+                word: "Tácito",
+                syllables: "tá·ci·to",
+                pos: "adjetivo",
+                definition: "Subentendido, implícito, não expresso por palavras mas aceito de fato.",
+                synonyms: ["implícito", "subentendido", "tácito", "silencioso"],
+                antonyms: ["explícito", "expresso", "declarado", "claro"],
+                etymology: "Do latim 'tacitus' (calado, silencioso, subentendido).",
+                example: "Havia um acordo tácito entre os vizinhos para respeitar o silêncio noturno."
+            },
+            {
+                word: "Tenacidade",
+                syllables: "te·na·ci·da·de",
+                pos: "substantivo feminino",
+                definition: "Firmeza de propósito, persistência obstinada e resistência diante de obstáculos.",
+                synonyms: ["persistência", "firmeza", "obstinação", "perseverança", "determinação"],
+                antonyms: ["desistência", "inconstância", "fraqueza"],
+                etymology: "Do latim 'tenacitas', de 'tenax' (que segura firme, tenaz).",
+                example: "Sua tenacidade permitiu concluir a pesquisa mesmo após vários contratempos."
+            },
+            {
+                word: "Transcender",
+                syllables: "trans·cen·der",
+                pos: "verbo transitivo e intransitivo",
+                definition: "Ultrapassar limites, ir além de determinado nível ou esfera.",
+                synonyms: ["ultrapassar", "superar", "transcender", "elevar-se"],
+                antonyms: ["limitar-se", "restringir-se", "permanecer"],
+                etymology: "Do latim 'transcendere' (transpor, passar além, ultrapassar).",
+                example: "A obra transcendeu as fronteiras locais e alcançou leitores diversos."
+            },
+            {
+                word: "Utopia",
+                syllables: "u·to·pi·a",
+                pos: "substantivo feminino",
+                definition: "Projeto ou ideia de sociedade perfeita e harmoniosa; por extensão, ideal difícil ou irrealizável.",
+                synonyms: ["ideal", "quimera", "sonho", "projeto"],
+                antonyms: ["realidade", "pragmatismo", "distopia"],
+                etymology: "Criada por Thomas More em 1516 a partir do grego 'ou-' (não) e 'tópos' (lugar), significando 'lugar que não existe'.",
+                example: "Mesmo sabendo que a perfeição é uma utopia, buscavam melhorias constantes."
+            },
+            {
+                word: "Vanguarda",
+                syllables: "van·guar·da",
+                pos: "substantivo feminino",
+                definition: "Posição avançada que lidera uma marcha ou movimento; grupo que abre novos caminhos culturais ou técnicos.",
+                synonyms: ["pioneirismo", "frente", "liderança", "inovação"],
+                antonyms: ["retaguarda", "atraso", "conservadorismo"],
+                etymology: "Do francês antigo 'avangarde' (guarda avançada).",
+                example: "O coletivo esteve na vanguarda das experiências visuais da época."
+            },
+            {
+                word: "Veemente",
+                syllables: "ve·e·men·te",
+                pos: "adjetivo de dois gêneros",
+                definition: "Intenso, impetuoso, apaixonado ou enérgico na expressão.",
+                synonyms: ["intenso", "impetuoso", "enérgico", "ardente", "veemente"],
+                antonyms: ["brando", "frio", "apático", "moderado"],
+                etymology: "Do latim 'vehemens, -entis' (impetuoso, ardente, vigoroso).",
+                example: "Fez um apelo veemente em defesa da educação pública de qualidade."
+            },
+            {
+                word: "Venerar",
+                syllables: "ve·ne·rar",
+                pos: "verbo transitivo",
+                definition: "Respeitar profundamente, honrar com devoção ou reverenciar.",
+                synonyms: ["reverenciar", "honrar", "respeitar", "cultuar", "venerar"],
+                antonyms: ["desrespeitar", "profanar", "menosprezar"],
+                etymology: "Do latim 'venerari' (reverenciar, honrar com respeito).",
+                example: "A comunidade continuava a venerar a memória dos antigos fundadores."
+            },
+            {
+                word: "Versátil",
+                syllables: "ver·sá·til",
+                pos: "adjetivo de dois gêneros",
+                definition: "Que se adapta facilmente a diferentes funções, estilos ou situações; flexível.",
+                synonyms: ["adaptável", "flexível", "polivalente", "versátil", "dinâmico"],
+                antonyms: ["rígido", "inflexível", "limitado"],
+                etymology: "Do latim 'versatilis' (que gira facilmente, variável, flexível).",
+                example: "Era uma ferramenta versátil, útil tanto em rascunhos quanto em projetos finais."
+            },
+            {
+                word: "Vigor",
+                syllables: "vi·gor",
+                pos: "substantivo masculino",
+                definition: "Força física, energia vital, intensidade ou firmeza de ação.",
+                synonyms: ["força", "energia", "vitalidade", "intensidade", "firmeza"],
+                antonyms: ["fraqueza", "abatimento", "languidez", "fadiga"],
+                etymology: "Do latim 'vigor' (força, vivacidade, energia), de 'vigere' (estar forte ou florescer).",
+                example: "O debate ganhou novo vigor após a apresentação dos dados recentes."
+            },
+            {
+                word: "Virtude",
+                syllables: "vir·tu·de",
+                pos: "substantivo feminino",
+                definition: "Disposição constante para o bem; qualidade moral elevada ou eficácia própria de algo.",
+                synonyms: ["qualidade", "bondade", "retidão", "mérito", "excelência"],
+                antonyms: ["vício", "defeito", "maldade"],
+                etymology: "Do latim 'virtus, -utis' (força, valor moral, excelência), ligado a 'vir' (homem/valor).",
+                example: "A paciência é uma virtude indispensável em processos criativos longos."
+            },
+            {
+                word: "Zelo",
+                syllables: "ze·lo",
+                pos: "substantivo masculino",
+                definition: "Cuidado dedicado, dedicação afetuosa ou empenho rigoroso no cumprimento de algo.",
+                synonyms: ["cuidado", "dedicação", "empenho", "diligência", "atenção"],
+                antonyms: ["descaso", "negligência", "desleixo"],
+                etymology: "Do latim 'zelus', derivado do grego 'zélos' (ardor, empenho, zelo).",
+                example: "Cuidava dos instrumentos antigos com enorme zelo."
+            },
+            {
+                word: "Zombaria",
+                syllables: "zom·ba·ri·a",
+                pos: "substantivo feminino",
+                definition: "Ato de zombar; gracejo irônico, troça ou escárnio.",
+                synonyms: ["troça", "escárnio", "gracejo", "ironia", "caçoada"],
+                antonyms: ["respeito", "elogio", "consideração"],
+                etymology: "Derivado de 'zombar', de origem expressiva/românica.",
+                example: "Não se abalou com a zombaria inicial e seguiu firme no plano."
             }
         ];
 
         // State Variables
+        let activeDictionary = [...BUILTIN_DICTIONARY];
+        let isExternalSourceLoaded = false;
         let currentViewingDate = new Date(); // Defaults to today
         let currentWordObj = null;
         let favorites = JSON.parse(localStorage.getItem('lexico_favorites') || '[]');
 
         /**
-         * DETERMINISTIC SEED GENERATOR BASED ON DATE
-         * Garante que qualquer pessoa no mundo na mesma data (YYYY-MM-DD)
-         * receba exatamente o mesmo índice do dicionário.
+         * CARREGAMENTO DO ACERVO (palavras.json externo com fallback transparente para BUILTIN_DICTIONARY)
+         */
+        async function loadDictionarySource() {
+            try {
+                const response = await fetch('./palavras.json', { cache: 'no-store' });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                const data = await response.json();
+                if (!Array.isArray(data) || data.length === 0) {
+                    throw new Error('Estrutura JSON inválida ou vazia');
+                }
+
+                // Filtra itens válidos e evita duplicatas por palavra mantendo a ordem
+                const seen = new Set();
+                const validEntries = [];
+                for (const item of data) {
+                    if (item && typeof item.word === 'string' && item.word.trim().length > 0) {
+                        const normalized = item.word.trim().toLowerCase();
+                        if (!seen.has(normalized)) {
+                            seen.add(normalized);
+                            validEntries.push({
+                                word: item.word.trim(),
+                                syllables: item.syllables || item.word.trim(),
+                                pos: item.pos || item.grammarClass || 'verbete',
+                                definition: item.definition || '',
+                                synonyms: Array.isArray(item.synonyms) ? item.synonyms : [],
+                                antonyms: Array.isArray(item.antonyms) ? item.antonyms : [],
+                                etymology: item.etymology || '',
+                                example: item.example || ''
+                            });
+                        }
+                    }
+                }
+
+                if (validEntries.length > 0) {
+                    activeDictionary = validEntries;
+                    isExternalSourceLoaded = true;
+                }
+            } catch (_err) {
+                // Fallback silencioso e transparente para o acervo embutido
+                activeDictionary = [...BUILTIN_DICTIONARY];
+                isExternalSourceLoaded = false;
+            }
+        }
+
+        /**
+         * DETERMINISTIC SEED GENERATOR BASED ON DATE (YYYY-MM-DD)
+         * Garante que para uma mesma data local, a palavra seja sempre a mesma,
+         * e que mude automaticamente quando o dia mudar.
          */
         function getDateKey(dateObj) {
             const year = dateObj.getFullYear();
@@ -666,30 +1870,31 @@
             return `${year}-${month}-${day}`;
         }
 
+        function hashDateKey(dateKey) {
+            let hash = 2166136261;
+            for (let i = 0; i < dateKey.length; i++) {
+                hash ^= dateKey.charCodeAt(i);
+                hash = Math.imul(hash, 16777619);
+            }
+            return hash >>> 0;
+        }
+
         function getWordForDate(dateObj) {
-            // Calcula o número de dias inteiros desde uma data de época fixa (1 Jan 2024)
-            // Isso evita repetições seguidas e garante distribuição uniforme dia após dia
-            const epoch = new Date(2024, 0, 1);
-            const target = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
-            const diffTime = target.getTime() - epoch.getTime();
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            
-            // Aplica um passo primo coprimo ou módulo direto para embaralhar de forma determinística
-            const total = DICTIONARY.length;
-            // Usamos uma função hash determinística simples baseada no dia absoluto
-            const index = Math.abs((diffDays * 17 + 7) % total);
-            return DICTIONARY[index];
+            const key = getDateKey(dateObj);
+            const total = activeDictionary.length;
+            const index = hashDateKey(key) % total;
+            return activeDictionary[index];
         }
 
         /**
          * RENDERIZAÇÃO DA PALAVRA NA INTERFACE
          */
         function renderWord(dateObj) {
-            currentViewingDate = dateObj;
-            currentWordObj = getWordForDate(dateObj);
+            currentViewingDate = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
+            currentWordObj = getWordForDate(currentViewingDate);
             
             const todayKey = getDateKey(new Date());
-            const viewingKey = getDateKey(dateObj);
+            const viewingKey = getDateKey(currentViewingDate);
             const isToday = todayKey === viewingKey;
 
             // Atualiza cabeçalho de data e badges
@@ -699,7 +1904,7 @@
                 month: 'long',
                 year: 'numeric'
             });
-            document.getElementById('formatted-date').textContent = dateFormatter.format(dateObj);
+            document.getElementById('formatted-date').textContent = dateFormatter.format(currentViewingDate);
             
             const editionBadge = document.getElementById('edition-badge');
             const pastBanner = document.getElementById('past-date-banner');
@@ -712,10 +1917,17 @@
                 pastBanner.classList.remove('hidden');
             }
 
+            const sourceIndicator = document.getElementById('source-indicator');
+            if (sourceIndicator) {
+                sourceIndicator.textContent = isExternalSourceLoaded
+                    ? `palavras.json (${activeDictionary.length})`
+                    : `Acervo Embutido (${activeDictionary.length})`;
+            }
+
             // Preenche dados lexicais
             document.getElementById('word-title').textContent = currentWordObj.word;
             document.getElementById('word-syllables').textContent = currentWordObj.syllables;
-            document.getElementById('word-class').textContent = currentWordObj.grammarClass;
+            document.getElementById('word-class').textContent = currentWordObj.pos;
             document.getElementById('word-definition').textContent = currentWordObj.definition;
             document.getElementById('word-example').textContent = `“${currentWordObj.example}”`;
             document.getElementById('word-etymology').textContent = currentWordObj.etymology;
@@ -749,18 +1961,21 @@
             const now = new Date();
             const currentKey = getDateKey(now);
 
-            // Se virou a meia-noite enquanto o usuário estava com a página aberta e vendo hoje
+            // Se virou a meia-noite, atualiza automaticamente para a palavra do novo dia
             if (currentKey !== lastKnownDateKey) {
+                const wasViewingPreviousDay = getDateKey(currentViewingDate) === lastKnownDateKey;
                 lastKnownDateKey = currentKey;
-                renderWord(now);
-                showToast("Meia-noite! Uma nova Palavra do Dia chegou.");
+                if (wasViewingPreviousDay) {
+                    renderWord(now);
+                }
+                showToast("Meia-noite! Uma nova Palavra do Dia está disponível.");
             }
 
             const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
-            const diff = midnight - now;
+            const diff = Math.max(0, midnight - now);
 
             const hours = String(Math.floor((diff / (1000 * 60 * 60)) % 24)).padStart(2, '0');
-            const minutes = String(Math.floor((diff / 1000 / 60) % 60)).padStart(2, '0');
+            const minutes = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, '0');
             const seconds = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
 
             document.getElementById('countdown-timer').textContent = `${hours}:${minutes}:${seconds}`;
@@ -770,37 +1985,40 @@
          * PRONÚNCIA EM ÁUDIO (Web Speech API - pt-BR)
          */
         function speakWord() {
-            if (!('speechSynthesis' in window)) {
-                showToast("Seu navegador não suporta síntese de voz.", "error");
+            if (!('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') {
+                showToast("Pronúncia em áudio indisponível neste navegador.");
                 return;
             }
 
-            // Cancela qualquer fala em andamento
-            window.speechSynthesis.cancel();
+            try {
+                window.speechSynthesis.cancel();
 
-            const utterance = new SpeechSynthesisUtterance(currentWordObj.word);
-            utterance.lang = 'pt-BR';
-            utterance.rate = 0.9; // Levemente pausado para clareza diccionária
+                const utterance = new SpeechSynthesisUtterance(currentWordObj.word);
+                utterance.lang = 'pt-BR';
+                utterance.rate = 0.9;
 
-            // Tenta selecionar uma voz pt-BR nativa de alta qualidade
-            const voices = window.speechSynthesis.getVoices();
-            const ptVoice = voices.find(v => v.lang === 'pt-BR' || v.lang.startsWith('pt'));
-            if (ptVoice) {
-                utterance.voice = ptVoice;
+                const voices = window.speechSynthesis.getVoices();
+                const ptVoice = voices.find(v => v.lang === 'pt-BR' || v.lang.startsWith('pt'));
+                if (ptVoice) {
+                    utterance.voice = ptVoice;
+                }
+
+                const btn = document.getElementById('speak-btn');
+                btn.classList.add('ring-2', 'ring-paper-accentLight', 'dark:ring-paper-accentDark');
+
+                utterance.onend = () => {
+                    btn.classList.remove('ring-2', 'ring-paper-accentLight', 'dark:ring-paper-accentDark');
+                };
+
+                utterance.onerror = () => {
+                    btn.classList.remove('ring-2', 'ring-paper-accentLight', 'dark:ring-paper-accentDark');
+                    showToast("Não foi possível reproduzir o áudio agora.");
+                };
+
+                window.speechSynthesis.speak(utterance);
+            } catch (_err) {
+                showToast("Recurso de áudio indisponível neste ambiente.");
             }
-
-            const btn = document.getElementById('speak-btn');
-            btn.classList.add('ring-2', 'ring-paper-accentLight', 'dark:ring-paper-accentDark');
-
-            utterance.onend = () => {
-                btn.classList.remove('ring-2', 'ring-paper-accentLight', 'dark:ring-paper-accentDark');
-            };
-
-            utterance.onerror = () => {
-                btn.classList.remove('ring-2', 'ring-paper-accentLight', 'dark:ring-paper-accentDark');
-            };
-
-            window.speechSynthesis.speak(utterance);
         }
 
         // Pré-carrega vozes em navegadores baseados em Chromium
@@ -853,7 +2071,7 @@
         }
 
         /**
-         * MODAIS: ARQUIVO HISTÓRICO & FAVORITOS
+         * MODAIS: ARQUIVO HISTÓRICO (ÚLTIMOS 14 DIAS) & FAVORITOS
          */
         function openModal(type) {
             const modal = document.getElementById('list-modal');
@@ -876,20 +2094,20 @@
                     `;
                 } else {
                     favorites.forEach(wordStr => {
-                        const entry = DICTIONARY.find(w => w.word === wordStr);
+                        const entry = activeDictionary.find(w => w.word === wordStr) || BUILTIN_DICTIONARY.find(w => w.word === wordStr);
                         if (!entry) return;
 
                         const item = document.createElement('div');
                         item.className = "p-4 rounded-xl bg-paper-light dark:bg-paper-dark border border-paper-borderLight dark:border-paper-borderDark flex items-start justify-between gap-3 hover:border-paper-accentLight/50 transition-colors";
                         item.innerHTML = `
-                            <div class="cursor-pointer flex-grow" onclick="loadWordDirectly('${entry.word}')">
+                            <div class="cursor-pointer flex-grow" onclick="loadWordDirectly('${entry.word.replace(/'/g, "\\'")}')">
                                 <div class="flex items-baseline gap-2">
                                     <span class="font-serif font-bold text-lg">${entry.word}</span>
-                                    <span class="text-xs italic text-paper-accentLight dark:text-paper-accentDark">${entry.grammarClass}</span>
+                                    <span class="text-xs italic text-paper-accentLight dark:text-paper-accentDark">${entry.pos}</span>
                                 </div>
                                 <p class="text-xs text-paper-mutedLight dark:text-paper-mutedDark line-clamp-2 mt-1">${entry.definition}</p>
                             </div>
-                            <button onclick="removeFavoriteFromList('${entry.word}')" class="p-1.5 text-paper-mutedLight hover:text-red-500 transition-colors" title="Remover">
+                            <button onclick="removeFavoriteFromList('${entry.word.replace(/'/g, "\\'")}')" class="p-1.5 text-paper-mutedLight hover:text-red-500 transition-colors" title="Remover">
                                 <i data-lucide="trash-2" class="w-4 h-4"></i>
                             </button>
                         `;
@@ -897,10 +2115,9 @@
                     });
                 }
             } else if (type === 'history') {
-                title.textContent = "Edições Recentes";
+                title.textContent = "Últimos 14 Dias";
                 icon.setAttribute('data-lucide', 'calendar-days');
 
-                // Gera os últimos 14 dias (incluindo hoje)
                 const today = new Date();
                 const shortFormatter = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' });
 
@@ -937,9 +2154,8 @@
         }
 
         function loadWordDirectly(wordStr) {
-            // Procura nos últimos 60 dias a data em que esta palavra apareceu, ou exibe diretamente
             const today = new Date();
-            for (let i = 0; i < 60; i++) {
+            for (let i = 0; i < 365; i++) {
                 const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() - i);
                 if (getWordForDate(d).word === wordStr) {
                     renderWord(d);
@@ -947,13 +2163,12 @@
                     return;
                 }
             }
-            // Fallback se estiver além de 60 dias
-            const entry = DICTIONARY.find(w => w.word === wordStr);
+            const entry = activeDictionary.find(w => w.word === wordStr) || BUILTIN_DICTIONARY.find(w => w.word === wordStr);
             if (entry) {
                 currentWordObj = entry;
                 document.getElementById('word-title').textContent = entry.word;
                 document.getElementById('word-syllables').textContent = entry.syllables;
-                document.getElementById('word-class').textContent = entry.grammarClass;
+                document.getElementById('word-class').textContent = entry.pos;
                 document.getElementById('word-definition').textContent = entry.definition;
                 document.getElementById('word-example').textContent = `“${entry.example}”`;
                 document.getElementById('word-etymology').textContent = entry.etymology;
@@ -967,7 +2182,7 @@
             localStorage.setItem('lexico_favorites', JSON.stringify(favorites));
             updateFavoriteButtonUI();
             updateFavoriteBadge();
-            openModal('favorites'); // Re-render list
+            openModal('favorites');
         }
 
         function closeModal(id) {
@@ -987,22 +2202,18 @@
             const canvas = document.getElementById('share-canvas');
             const ctx = canvas.getContext('2d');
 
-            // Alta resolução para cartão editorial (1080 x 1080)
             const width = 1080;
             const height = 1080;
             canvas.width = width;
             canvas.height = height;
 
-            // Fundo papel creme editorial
             ctx.fillStyle = '#FAF8F5';
             ctx.fillRect(0, 0, width, height);
 
-            // Moldura interna sutil
             ctx.strokeStyle = '#E8E2D9';
             ctx.lineWidth = 4;
             ctx.strokeRect(48, 48, width - 96, height - 96);
 
-            // Cabeçalho: Léxico Diário & Data
             ctx.fillStyle = '#8C3B2B';
             ctx.font = '600 24px Inter, sans-serif';
             ctx.fillText('PALAVRA DO DIA • LÉXICO DIÁRIO', 96, 130);
@@ -1012,16 +2223,13 @@
             ctx.font = '400 24px Inter, sans-serif';
             ctx.fillText(dateStr.toUpperCase(), 96, 170);
 
-            // Linha divisória superior
             ctx.fillStyle = '#E8E2D9';
             ctx.fillRect(96, 205, width - 192, 2);
 
-            // Título da Palavra (Playfair Display)
             ctx.fillStyle = '#1C1917';
             ctx.font = 'bold 96px "Playfair Display", Georgia, serif';
             ctx.fillText(currentWordObj.word, 96, 330);
 
-            // Separação silábica & Classe gramatical
             ctx.fillStyle = '#57534E';
             ctx.font = '400 32px monospace';
             const sylWidth = ctx.measureText(currentWordObj.syllables).width;
@@ -1029,18 +2237,15 @@
 
             ctx.fillStyle = '#8C3B2B';
             ctx.font = 'italic 34px "Playfair Display", Georgia, serif';
-            ctx.fillText(`•  ${currentWordObj.grammarClass}`, 96 + sylWidth + 24, 390);
+            ctx.fillText(`•  ${currentWordObj.pos}`, 96 + sylWidth + 24, 390);
 
-            // Traço editorial terracota
             ctx.fillStyle = '#8C3B2B';
             ctx.fillRect(96, 440, 80, 6);
 
-            // Definição com quebra de linha automática
             ctx.fillStyle = '#1C1917';
             ctx.font = '400 36px Inter, sans-serif';
             const nextY = wrapCanvasText(ctx, currentWordObj.definition, 96, 520, width - 192, 52);
 
-            // Exemplo contextualizado
             const quoteY = Math.max(nextY + 50, 740);
             ctx.fillStyle = '#8C3B2B';
             ctx.fillRect(96, quoteY - 28, 6, 130);
@@ -1049,7 +2254,6 @@
             ctx.font = 'italic 30px "Playfair Display", Georgia, serif';
             wrapCanvasText(ctx, `“${currentWordObj.example}”`, 126, quoteY + 10, width - 230, 44);
 
-            // Rodapé do Cartão
             ctx.fillStyle = '#E8E2D9';
             ctx.fillRect(96, height - 130, width - 192, 2);
 
@@ -1079,9 +2283,8 @@
         }
 
         function copyShareText() {
-            const shareText = `📖 *Palavra do Dia — ${currentWordObj.word}* (${currentWordObj.syllables})\n_${currentWordObj.grammarClass}_\n\n${currentWordObj.definition}\n\n💬 “${currentWordObj.example}”`;
+            const shareText = `📖 *Palavra do Dia — ${currentWordObj.word}* (${currentWordObj.syllables})\n_${currentWordObj.pos}_\n\n${currentWordObj.definition}\n\n💬 “${currentWordObj.example}”`;
             
-            // Uso de textarea temporário + execCommand para máxima compatibilidade em iframes
             const textArea = document.createElement("textarea");
             textArea.value = shareText;
             textArea.style.position = "fixed";
@@ -1093,8 +2296,8 @@
             try {
                 document.execCommand('copy');
                 showToast("Texto copiado para a área de transferência!");
-            } catch (err) {
-                showToast("Não foi possível copiar o texto.", "error");
+            } catch (_err) {
+                showToast("Não foi possível copiar o texto.");
             }
             
             document.body.removeChild(textArea);
@@ -1158,8 +2361,9 @@
         });
 
         // Inicialização da aplicação
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
             initTheme();
+            await loadDictionarySource();
             renderWord(new Date());
             updateFavoriteBadge();
             updateCountdown();
